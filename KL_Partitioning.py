@@ -1,9 +1,13 @@
 # Kernighan Lin Algorithm for Circuit Partitioning
-#Authors: Samarth Bonthala, Tarun Mittal
+# Authors: Samarth Bonthala, Tarun Mittal
+
+# Function to take in input
+
 f = open("adj_matrix.txt",'r')
 
 data = f.readlines()
 adj_matrix = []
+dummy = 0
 
 for i in data:
 	temp = i.split()
@@ -12,11 +16,15 @@ for i in data:
   
 print (adj_matrix)
 
+
 no_of_nodes = len(adj_matrix[0])
 
 # Adding a dummy node
+
 if (len(adj_matrix[0])%2 != 0):
 	no_of_nodes = no_of_nodes + 1
+	dummy = 1 # Keeping track of the number of the dummy node
+	
 	for i in range(no_of_nodes-1):
 		adj_matrix[i].append(0)
 	temp = [0]*(no_of_nodes)
@@ -102,11 +110,26 @@ while( max_g > 0 ):
 			else:
 				x = -1
 				
-			D[i] = D[i] + 2*x* ( adj_matrix[i][max_i] - adj_matrix[i][max_j])
+			D[i] = D[i] + 2*x*(adj_matrix[i][max_i] - adj_matrix[i][max_j])
 			
 	print(D)
-	  
+
+# Removal of Dummy node
+
+if (dummy == 1):
+	temp = no_of_nodes - 1
+	if temp in A:
+		A.remove(temp)
+	if temp in B:
+		B.remove(temp)
 
 print(A)
 print(B)
+
+#def main():
+
+#	print ("Enter the name of the file where the adjacency matrix is stored")
+#	filename = raw_input()
+	
+	
 
