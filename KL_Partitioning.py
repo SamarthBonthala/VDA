@@ -1,5 +1,5 @@
 # Kernighan Lin Algorithm for Circuit Partitioning
-#Authors: Samarth Bones, Tarun Mittal
+#Authors: Samarth Bonthala, Tarun Mittal
 f = open("adj_matrix.txt",'r')
 
 data = f.readlines()
