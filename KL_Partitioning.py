@@ -185,8 +185,8 @@ def KL_Algo(adj_matrix,alp,n):
         print(B)
 
         print(alp)
-	alp_A = [ chr(i+97+alp[A[i]]) for i in range(len(A)) ]
-	alp_B = [ chr(i+97+alp[B[i]]) for i in range(len(B)) ]
+	alp_A = [ chr(97+alp[A[i]]) for i in range(len(A)) ]
+	alp_B = [ chr(97+alp[B[i]]) for i in range(len(B)) ]
 	
 	print "parts"
 	print(alp_A)
