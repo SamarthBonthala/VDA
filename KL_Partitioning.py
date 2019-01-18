@@ -50,12 +50,14 @@ def KL_Algo(adj_matrix,alp,n):
 	
 		for i in range(no_of_nodes-1):
 			adj_matrix[i].append(0)
+                #alp.append(25+97)
 		temp = [0]*(no_of_nodes)
 		adj_matrix.append(temp)
 			
 	# Random partitioning to form a bipartition
 		 
 	locked = [0]*len(adj_matrix[0]) # To indicate if node is in locked state or not
+        #print(locked)
 	A = []
 	B = []
 
@@ -65,8 +67,8 @@ def KL_Algo(adj_matrix,alp,n):
 	  	else:
 	  		B.append(i)
 
-	print(A)
-	print(B)
+	#print(A)
+	#print(B)
 
 	# Computation of D, D(i) = E(i) - I(i) where i represents each node
 	
@@ -89,7 +91,7 @@ def KL_Algo(adj_matrix,alp,n):
 				else:
 					D[i] = D[i] + adj_matrix[i][j]
 		
-	print(D)
+	#print(D)
 
 	# Calculation of g - Gains
 		
@@ -111,10 +113,10 @@ def KL_Algo(adj_matrix,alp,n):
 							max_i = i
 							max_j = j
 
-		print (g)
-		print(max_g)
-		print(max_i)
-		print(max_j)
+		#print (g)
+		#print(max_g)
+		#print(max_i)
+		#print(max_j)
 
 		if(max_g>0):
 			locked[max_i] = 1
@@ -135,7 +137,7 @@ def KL_Algo(adj_matrix,alp,n):
 				
 				D[i] = D[i] + 2*x*(adj_matrix[i][max_i] - adj_matrix[i][max_j])
 			
-		print(D)
+		#print(D)
 
 	# Removal of Dummy node
 
@@ -177,11 +179,16 @@ def KL_Algo(adj_matrix,alp,n):
 			adj_mat_B[x][y] = adj_matrix[i][j]
 			y = y + 1
 		x = x + 1
+        
+        print"A,B,alp"
+        print(A)
+        print(B)
+
+        print(alp)
+	alp_A = [ chr(i+97+alp[A[i]]) for i in range(len(A)) ]
+	alp_B = [ chr(i+97+alp[B[i]]) for i in range(len(B)) ]
 	
-	alp_A = [ chr(i+97+alp[i]) for i in A ]
-	alp_B = [ chr(i+97+alp[i]) for i in B ]
-	
-	print"parts"
+	print "parts"
 	print(alp_A)
 	print(alp_B)
 	
@@ -215,7 +222,7 @@ def main():
 	# Running the KL Algorithm
 	no_of_nodes = len(adj_matrix[0])
 	alp = [ i for i in range(no_of_nodes)]
-	print(alp) 
+	#print(alp) 
 	
 	part_A,part_B,adj_mat_A,adj_mat_B = KL_Algo(adj_matrix,alp,n)
 	
