@@ -1,7 +1,17 @@
 # Kernighan Lin Algorithm for Circuit Partitioning
 # Authors: Samarth Bonthala, Tarun Mittal
 
-# Global Variables
+import math 
+  
+# Function to check 
+# Log base 2 
+def Log2(x): 
+    return (math.log10(x) / math.log10(2)); 
+  
+# Function to check 
+# if x is power of 2 
+def isPowerOfTwo(n): 
+    return (math.ceil(Log2(n)) == math.floor(Log2(n))); 
 
 
 # Input Function
@@ -25,7 +35,9 @@ def input_func(filename):
 # Returns: Two partitions with minimum cut cost
 # For n partitions, run the partitioning multiple times
  	
-def KL_Algo(adj_matrix):
+def KL_Algo(adj_matrix,alp,n):
+
+	n = n/2;
 
 	dummy = 0 # To trace if a dummy node was added during partitioning or not
 	no_of_nodes = len(adj_matrix[0])
@@ -136,8 +148,51 @@ def KL_Algo(adj_matrix):
 	
 	#print(A)
 	#print(B)
- 	
- 	return A,B
+
+	no_ele_A = len(A)
+	no_ele_B = len(B)
+	temp_A = [0]* no_ele_A
+	temp_B = [0]* no_ele_B
+	
+	# Intialize the matrix to 0
+	adj_mat_A = [[0 for i in range(no_ele_A)] for j in range(no_ele_A)]
+	adj_mat_B = [[0 for i in range(no_ele_B)] for j in range(no_ele_B)]
+		
+	# Adjacency matrix of partition A
+	x = 0
+	for i in A:
+		#print(i)
+		y = 0
+		for j in A:
+			#print(j)
+			adj_mat_A[x][y] = adj_matrix[i][j]
+			y = y + 1
+		x = x + 1
+					
+	# Adjacency matrix of partition B
+	x = 0
+	for i in B:
+		y = 0
+		for j in B:
+			adj_mat_B[x][y] = adj_matrix[i][j]
+			y = y + 1
+		x = x + 1
+	
+	alp_A = [ chr(i+97+alp[i]) for i in A ]
+	alp_B = [ chr(i+97+alp[i]) for i in B ]
+	
+	print"parts"
+	print(alp_A)
+	print(alp_B)
+	
+	#print(A)
+	#print(B)
+		
+	if(n>1):
+		p_A1, p_B1, adj_A1, adj_B1 =  KL_Algo(adj_mat_A,A,n)
+		p_A2, p_B2, adj_A2, adj_B2 =  KL_Algo(adj_mat_B,B,n)
+			
+ 	return A,B,adj_mat_A,adj_mat_B
  	
 def main():
 
@@ -147,12 +202,28 @@ def main():
 	# Take input from the text file containing the adjacency matrix of unpartitioned graph
 	adj_matrix = input_func(filename)
 	
+	# Enter number of partitions needed, n where n must be a power of 2
+	
+	print "Enter number of partitions needed (n has to be a power of 2): "
+	n = int(raw_input("\n"))
+	
+	# Validation that the number of partitions is a power of 2
+	#while(~isPowerOfTwo(n)):
+		#print "Re-enter number of partitions. n has to be a power of 2."
+		#n = int(raw_input("\n"))
+	
 	# Running the KL Algorithm
-	part_A,part_B = KL_Algo(adj_matrix)
+	no_of_nodes = len(adj_matrix[0])
+	alp = [ i for i in range(no_of_nodes)]
+	print(alp) 
 	
-	print "The two partitions are: \n"
-	print(part_A)
-	print(part_B)
+	part_A,part_B,adj_mat_A,adj_mat_B = KL_Algo(adj_matrix,alp,n)
 	
+	# print "The two partitions are: \n"
+	#print(part_A)
+	#print(part_B)
+	#print (adj_mat_A)
+	#print (adj_mat_B)
+	 
 main()
 
