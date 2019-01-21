@@ -4,6 +4,8 @@
 **Input Format**
 
 A text file containing the adjacency matrix is taken as input when the code is run.
+Separate all inputs in a row with a space and enter each row in a new line. 
+Do not have any extra blank row
 
 **Step 1**: Run the code on the command line 
 
@@ -16,10 +18,11 @@ ex: adj_matrix.txt (This file is there in the submission folder)
 **Step 3**: Enter number of partitions needed (only a power of 2 is allowed)
 
 When partitions greater than number of nodes is entered, the code exits with a message saying "Partitioning not possible" hence tackling the corner case
+In case of the input not being power of 2, it will prompt asking you for input again.
 
 **Output Format**
 
-Partitions at all levels of the recursion are printed on the command line
+The required partitions are printed on the command line.
 
 **Modular Approach**
 
