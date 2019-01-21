@@ -1,19 +1,6 @@
 # Kernighan Lin Algorithm for Circuit Partitioning
 # Authors: Samarth Bonthala, Tarun Mittal
 
-import math 
-  
-# Function to check 
-# Log base 2 
-def Log2(x): 
-    return (math.log10(x) / math.log10(2)); 
-  
-# Function to check 
-# if x is power of 2 
-def isPowerOfTwo(n): 
-    return (math.ceil(Log2(n)) == math.floor(Log2(n))); 
-
-
 # Input Function
 def input_func(filename):
 
@@ -31,8 +18,8 @@ def input_func(filename):
 	# print (adj_matrix)
 	
 # Function for the KL algorithm
-# Inputs: Adjacency matrix
-# Returns: Two partitions with minimum cut cost
+# Inputs: Adjacency matrix, Number of elements and Node names
+# Output: Two partitions with minimum cut cost
 # For n partitions, run the partitioning multiple times
  	
 def KL_Algo(adj_matrix,alp,n):
@@ -136,8 +123,6 @@ def KL_Algo(adj_matrix,alp,n):
 					x = -1
 				
 				D[i] = D[i] + 2*x*(adj_matrix[i][max_i] - adj_matrix[i][max_j])
-			
-		#print(D)
 
 	# Removal of Dummy node
 
@@ -147,9 +132,6 @@ def KL_Algo(adj_matrix,alp,n):
 			A.remove(temp)
 		if temp in B:
 			B.remove(temp)
-	
-	#print(A)
-	#print(B)
 
 	no_ele_A = len(A)
 	no_ele_B = len(B)
@@ -180,15 +162,15 @@ def KL_Algo(adj_matrix,alp,n):
 			y = y + 1
 		x = x + 1
         
-        print"A,B,alp"
-        print(A)
-        print(B)
+        #print"A,B,alp"
+        #print(A)
+        #print(B)
 
         print(alp)
 	alp_A = [ chr(97+alp[A[i]]) for i in range(len(A)) ]
 	alp_B = [ chr(97+alp[B[i]]) for i in range(len(B)) ]
 	
-	print "parts"
+	print "Partitions are as follows:"
 	print(alp_A)
 	print(alp_B)
 	
@@ -205,32 +187,33 @@ def main():
 
 	print ("Enter the name of the file where the adjacency matrix is stored")
 	filename = raw_input("\n")
-	print (filename)
+
 	# Take input from the text file containing the adjacency matrix of unpartitioned graph
 	adj_matrix = input_func(filename)
 	
+	# When there is only on entry in the adjacency matrix
+	if (len(adj_matrix) == 1):
+		print "Only one node is present, partitioning not possible"
+		return
+		
 	# Enter number of partitions needed, n where n must be a power of 2
 	
 	print "Enter number of partitions needed (n has to be a power of 2): "
 	n = int(raw_input("\n"))
 	
-	# Validation that the number of partitions is a power of 2
-	#while(~isPowerOfTwo(n)):
-		#print "Re-enter number of partitions. n has to be a power of 2."
-		#n = int(raw_input("\n"))
-	
+	# Tackling corner cases
+		
+	# When number of partitions required are greater than number of nodes
+	if (n > len(adj_matrix[0])):
+		print "Number of nodes are less than partitions required. Partitioning not possible"
+		return
+		
 	# Running the KL Algorithm
 	no_of_nodes = len(adj_matrix[0])
 	alp = [ i for i in range(no_of_nodes)]
-	#print(alp) 
 	
 	part_A,part_B,adj_mat_A,adj_mat_B = KL_Algo(adj_matrix,alp,n)
 	
-	# print "The two partitions are: \n"
-	#print(part_A)
-	#print(part_B)
-	#print (adj_mat_A)
-	#print (adj_mat_B)
 	 
 main()
 
