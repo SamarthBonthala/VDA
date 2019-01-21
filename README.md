@@ -1,7 +1,5 @@
 # VDA Assignment and Course Project
-## Assignment 1
-
-**Kernighan Lin Partitioning Algorithm**
+## Assignment 1 - Kernighan Lin Partitioning Algorithm
 
 **Input Format**
 
