@@ -166,13 +166,14 @@ def KL_Algo(adj_matrix,alp,n):
         #print(A)
         #print(B)
 
-        print(alp)
+        #print(alp)
 	alp_A = [ chr(97+alp[A[i]]) for i in range(len(A)) ]
 	alp_B = [ chr(97+alp[B[i]]) for i in range(len(B)) ]
 	
-	print "Partitions are as follows:"
-	print(alp_A)
-	print(alp_B)
+	
+	if(n<2):
+		print(alp_A)
+		print(alp_B)
 	
 	#print(A)
 	#print(B)
@@ -212,6 +213,7 @@ def main():
 	no_of_nodes = len(adj_matrix[0])
 	alp = [ i for i in range(no_of_nodes)]
 	
+	print "Partitions are as follows:"
 	part_A,part_B,adj_mat_A,adj_mat_B = KL_Algo(adj_matrix,alp,n)
 	
 	 
