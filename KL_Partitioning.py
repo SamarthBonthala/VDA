@@ -1,6 +1,17 @@
 # Kernighan Lin Algorithm for Circuit Partitioning
 # Authors: Samarth Bonthala, Tarun Mittal
-
+  
+# Function to check if n is a power of 2 or not
+def isPowerOfTwo(n): 
+    if (n == 0): 
+        return False
+    while (n != 1): 
+            if (n % 2 != 0): 
+                return False
+            n = n // 2
+              
+    return True
+    
 # Input Function
 def input_func(filename):
 
@@ -44,7 +55,7 @@ def KL_Algo(adj_matrix,alp,n):
 	# Random partitioning to form a bipartition
 		 
 	locked = [0]*len(adj_matrix[0]) # To indicate if node is in locked state or not
-        #print(locked)
+
 	A = []
 	B = []
 
@@ -53,9 +64,6 @@ def KL_Algo(adj_matrix,alp,n):
 			A.append(i)
 	  	else:
 	  		B.append(i)
-
-	#print(A)
-	#print(B)
 
 	# Computation of D, D(i) = E(i) - I(i) where i represents each node
 	
@@ -77,8 +85,6 @@ def KL_Algo(adj_matrix,alp,n):
 					D[i] = D[i] - adj_matrix[i][j]
 				else:
 					D[i] = D[i] + adj_matrix[i][j]
-		
-	#print(D)
 
 	# Calculation of g - Gains
 		
@@ -100,10 +106,6 @@ def KL_Algo(adj_matrix,alp,n):
 							max_i = i
 							max_j = j
 
-		#print (g)
-		#print(max_g)
-		#print(max_i)
-		#print(max_j)
 
 		if(max_g>0):
 			locked[max_i] = 1
@@ -174,9 +176,6 @@ def KL_Algo(adj_matrix,alp,n):
 	if(n<2):
 		print(alp_A)
 		print(alp_B)
-	
-	#print(A)
-	#print(B)
 		
 	if(n>1):
 		p_A1, p_B1, adj_A1, adj_B1 =  KL_Algo(adj_mat_A,A,n)
@@ -202,6 +201,12 @@ def main():
 	print "Enter number of partitions needed (n has to be a power of 2): "
 	n = int(raw_input("\n"))
 	
+	if (isPowerOfTwo(n) == 0):
+		print "Number of partitions entered is not a power of 2 and therefore partitioning not possible."
+		
+	while(isPowerOfTwo(n) != 1):
+		n = int(raw_input("Re-enter value of n such that n is a power of 2. \n"))
+			
 	# Tackling corner cases
 		
 	# When number of partitions required are greater than number of nodes
