@@ -214,7 +214,7 @@ def main():
 		print "Number of nodes are less than partitions required. Partitioning not possible"
 		return
 		
-	# Running the KL Algorithm
+	# Running the KL Algorithm recursively
 	no_of_nodes = len(adj_matrix[0])
 	alp = [ i for i in range(no_of_nodes)]
 	

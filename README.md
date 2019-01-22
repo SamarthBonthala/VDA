@@ -4,16 +4,16 @@
 **Input Format**
 
 A text file containing the adjacency matrix is taken as input when the code is run.
-Separate all inputs in a row with a space and enter each row in a new line. 
+Separate all entries of the matrix in a row with a space and begin each row in a new line. 
 Do not have any extra blank row
 
-**Step 1**: Run the code on the command line 
+**Step 1**: Run the code on the command line either on Windows/ Ubuntu
 
 python KL_Partitioning.py
 
 **Step 2**: When prompted to enter the name of the file containing the adjacency matrix, enter the name of the file.
 
-ex: adj_matrix.txt (This file is there in the submission folder)
+eg: adj_matrix.txt (This file is there in the submission folder)
 
 **Step 3**: Enter number of partitions needed (only a power of 2 is allowed)
 
