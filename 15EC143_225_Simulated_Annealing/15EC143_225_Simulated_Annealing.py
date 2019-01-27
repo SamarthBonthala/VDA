@@ -47,7 +47,7 @@ def cost_func(A, B, adj_matrix, cost_func_factor):
 
 	cost = cutsize + cost_func_factor*imbalance_fact
 
-	print (cost)
+	#print (cost)
 
 	return cost,cutsize
 
@@ -68,9 +68,15 @@ def Sim_Ann(adj_matrix,n):
 	tempfact = 0.85
 	temperature = 1
 	temp_iteration = 1
-	cost_func_factor = 0.05
-	A_temp = A
-	B_temp = B
+	cost_func_factor = 0.5
+	A_temp = []
+	B_temp = []
+	for i in range(no_of_nodes):
+		if (i < no_of_nodes/2):
+			A_temp.append(i)
+		else:
+			B_temp.append(i)
+	
 	cost, cutsize = cost_func(A, B, adj_matrix, cost_func_factor)
 	cost_temp = cost
 	cutsize_temp = cutsize
@@ -79,9 +85,12 @@ def Sim_Ann(adj_matrix,n):
 	temp_reject = 0
 
 	while(temp_reject<5):
+		print"new"
 
 		x = random.randint(0, no_of_nodes-1)
-
+		print(x)
+		print(A)
+		print(B)
 		if x in A:
 			A_temp.remove(x)
 			B_temp.append(x)
@@ -89,6 +98,8 @@ def Sim_Ann(adj_matrix,n):
 			B_temp.remove(x)
 			A_temp.append(x)
 
+		print(A_temp)
+		print(B_temp)
 		cost_temp, cutsize_temp = cost_func(A_temp, B_temp, adj_matrix, cost_func_factor)
 
 		delta_cost = cost_temp - cost
@@ -117,7 +128,8 @@ def Sim_Ann(adj_matrix,n):
 		else:
 			reject = reject + 1
 			print "rejected" + str(reject)
-
+			A_temp = A
+			B_temp = B
 			if(reject >= 5):
 				temp_reject = temp_reject + 1
 				temperature = temperature*math.pow(tempfact,i) 
