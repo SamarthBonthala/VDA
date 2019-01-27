@@ -3,6 +3,7 @@
   
 import random
 import math
+import numpy as np
 
 # Function to check if n is a power of 2 or not
 def isPowerOfTwo(n): 
@@ -29,7 +30,12 @@ def input_func(filename):
 		adj_matrix.append(temp)
   	
   	return adj_matrix;
-	# print (adj_matrix)
+
+# Computing the cost function
+# f = C + lambda*(Imbalance)
+# C = cutsize (sum of edge weights of all the crossover edge weights from A to B)
+# Imbalance = (no_of_nodes_A - no_of_nodes_B)^2
+# Returns cost and cutsize
 	
 def cost_func(A, B, adj_matrix, cost_func_factor):
 
@@ -37,7 +43,6 @@ def cost_func(A, B, adj_matrix, cost_func_factor):
 
 	for i in A:
 		for j in B:
-
 			cutsize = cutsize + adj_matrix[i][j]
 
 	lenA = len(A)
@@ -47,13 +52,15 @@ def cost_func(A, B, adj_matrix, cost_func_factor):
 
 	cost = cutsize + cost_func_factor*imbalance_fact
 
-	#print (cost)
-
 	return cost,cutsize
+
+# Function for Simulated Annealing ALgorithm
+# Heuristic Algorithm for Partitioning
+# Inputs: adj_matrix and number of partitions needed, n
 
 def Sim_Ann(adj_matrix,n):
 	
-	# Split into two equal partitions randomly
+	# Spl[it into two equal partitions randomly
 	A = []
 	B = []
 	
@@ -65,17 +72,17 @@ def Sim_Ann(adj_matrix,n):
 		else:
 			B.append(i)
 			
-	tempfact = 0.85
-	temperature = 1
-	temp_iteration = 1
+	tempfact = 0.85 # r value in (r^i)*T
+	temperature = 1 # T value
+	temp_iteration = 1 # iteration number
 	cost_func_factor = 0.5
-	A_temp = []
-	B_temp = []
-	for i in range(no_of_nodes):
-		if (i < no_of_nodes/2):
-			A_temp.append(i)
-		else:
-			B_temp.append(i)
+	A_temp = A
+	B_temp = B
+	# for i in range(no_of_nodes):
+	# 	if (i < no_of_nodes/2):
+	# 		A_temp.append(i)
+	# 	else:
+	# 		B_temp.append(i)
 	
 	cost, cutsize = cost_func(A, B, adj_matrix, cost_func_factor)
 	cost_temp = cost
@@ -128,11 +135,11 @@ def Sim_Ann(adj_matrix,n):
 		else:
 			reject = reject + 1
 			print "rejected" + str(reject)
-			A_temp = A
-			B_temp = B
+			# A_temp = A
+			# B_temp = B
 			if(reject >= 5):
 				temp_reject = temp_reject + 1
-				temperature = temperature*math.pow(tempfact,i) 
+				temperature = temperature*math.pow(tempfact,temp_iteration) 
 				temp_iteration = temp_iteration + 1
 				if(temp_iteration>5):
 					temp_reject = 10
