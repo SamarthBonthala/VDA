@@ -19,32 +19,30 @@ def netlist_to_adj_mat():
 	# Calculation of number of nodes
 	no_of_nodes = 0
 	check = np.zeros(len(data))
-
+	inputs = []
+	outputs = []
+	conn = dict() # Dictionary to store all the entries
+	
 	for i in range(len(data)):
 		line = data[i].split(" ")
 		if (line[0] == "#"):
 			no_of_nodes = no_of_nodes + int(line[1])
 			check[i] = 1
-		if (line[0] == "\n"):
-			check[i] = 1			 		
+		elif ((data[i].split("("))[0] == "INPUT"):
+			temp = (data[i].split("("))[1].split(")")[0]
+			inputs.append(temp)
+		elif ((data[i].split("("))[0] == "OUTPUT"):
+			temp = (data[i].split("("))[1].split(")")[0]
+			outputs.append(temp)			 		
+		else:
+			
+		
 			
 	adj_mat = np.zeros((no_of_nodes,no_of_nodes)) # Initialize matrix of size no_of_nodes*no_of_nodes
-	
-	#print (check)
+
 	# Labelling the nodes as numbers from 0 to (no_of_nodes - 1)
 	
 	node_names = np.arange(0, no_of_nodes)
 	
-	# Removal of lines from the txt file to facilitate easy parsing
-	f1 = open("s27_new.bench",'a+')
 	
-	for i in range(len(data)):
-		line = data[i].split(" ")
-		print line[0]
-		print line
-		string = data[i]
-		f1.write(string)
-			
-	new_data = f1.readlines()
-	print (new_data)
 netlist_to_adj_mat()
