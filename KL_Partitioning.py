@@ -220,6 +220,14 @@ def main():
 	
 	print "Partitions are as follows:"
 	part_A,part_B,adj_mat_A,adj_mat_B = KL_Algo(adj_matrix,alp,n)
+	cutsize = 0
+
+	for i in part_A:
+		for j in part_B:
+
+			cutsize = cutsize + adj_matrix[i][j]
+
+	print(cutsize)
 	
 	 
 main()

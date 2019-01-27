@@ -1,6 +1,9 @@
 # Kernighan Lin Algorithm for Circuit Partitioning
 # Authors: Samarth Bonthala, Tarun Mittal
   
+import random
+import math
+
 # Function to check if n is a power of 2 or not
 def isPowerOfTwo(n): 
     if (n == 0): 
@@ -28,7 +31,25 @@ def input_func(filename):
   	return adj_matrix;
 	# print (adj_matrix)
 	
-def cost_func(A, B):
+def cost_func(A, B, adj_matrix, cost_func_factor):
+
+	cutsize = 0
+
+	for i in A:
+		for j in B:
+
+			cutsize = cutsize + adj_matrix[i][j]
+
+	lenA = len(A)
+	lenB = len(B)
+
+	imbalance_fact = (lenA - lenB)**2
+
+	cost = cutsize + cost_func_factor*imbalance_fact
+
+	print (cost)
+
+	return cost,cutsize
 
 def Sim_Ann(adj_matrix,n):
 	
@@ -44,7 +65,73 @@ def Sim_Ann(adj_matrix,n):
 		else:
 			B.append(i)
 			
-	
+	tempfact = 0.85
+	temperature = 1
+	temp_iteration = 1
+	cost_func_factor = 0.05
+	A_temp = A
+	B_temp = B
+	cost, cutsize = cost_func(A, B, adj_matrix, cost_func_factor)
+	cost_temp = cost
+	cutsize_temp = cutsize
+
+	reject = 0
+	temp_reject = 0
+
+	while(temp_reject<5):
+
+		x = random.randint(0, no_of_nodes-1)
+
+		if x in A:
+			A_temp.remove(x)
+			B_temp.append(x)
+		else:
+			B_temp.remove(x)
+			A_temp.append(x)
+
+		cost_temp, cutsize_temp = cost_func(A_temp, B_temp, adj_matrix, cost_func_factor)
+
+		delta_cost = cost_temp - cost
+
+		print "delta_cost" + str(delta_cost)
+		print "cutsize" + str(cutsize_temp)
+
+		if(delta_cost <= 0):
+			A = A_temp
+			B = B_temp
+			cost = cost_temp
+			cutsize = cutsize_temp
+			reject = 0
+			temp_reject = 0
+			print"1"
+
+		elif ( math.exp(-(delta_cost/temperature)) > random.uniform(0,1)):
+			print "tp" + str (math.exp(-(delta_cost/temperature))) + str(random.uniform(0,1))
+			A = A_temp
+			B = B_temp
+			cost = cost_temp
+			cutsize = cutsize_temp
+			reject = 0
+			temp_reject = 0
+			print"2"
+		else:
+			reject = reject + 1
+			print "rejected" + str(reject)
+
+			if(reject >= 5):
+				temp_reject = temp_reject + 1
+				temperature = temperature*math.pow(tempfact,i) 
+				temp_iteration = temp_iteration + 1
+				if(temp_iteration>5):
+					temp_reject = 10
+				print "rejectedtemp" + str(temp_reject)
+
+		print(A)
+		print(B)
+
+
+
+	return A,B, cutsize
 	
 	
 def main():
@@ -86,8 +173,12 @@ def main():
 		print alp
 		return
 		
+	
+	A,B, cutsize = Sim_Ann(adj_matrix,n)
 	print "Partitions are as follows:"
-	Sim_Ann(adj_matrix,n)
+	print(A)
+	print(B)
+	print(cutsize)
 	
 	 
 main()
