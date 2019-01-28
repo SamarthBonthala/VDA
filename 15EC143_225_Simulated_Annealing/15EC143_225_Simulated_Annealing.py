@@ -84,9 +84,12 @@ def Sim_Ann(adj_matrix,n):
 	# 	else:
 	# 		B_temp.append(i)
 	
+	A_res = A_temp
+	B_res = B_temp
+
 	cost, cutsize = cost_func(A, B, adj_matrix, cost_func_factor)
-	cost_temp = cost
-	cutsize_temp = cutsize
+	cost_temp = 0
+	cutsize_temp = 0
 
 	reject = 0
 	temp_reject = 0
