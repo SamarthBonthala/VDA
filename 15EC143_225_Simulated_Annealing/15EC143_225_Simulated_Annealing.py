@@ -77,9 +77,12 @@ def Sim_Ann(adj_matrix,n):
 		else:
 			B_temp.append(i)
 	
+	A_res = A_temp
+	B_res = B_temp
+
 	cost, cutsize = cost_func(A, B, adj_matrix, cost_func_factor)
-	cost_temp = cost
-	cutsize_temp = cutsize
+	cost_temp = 0
+	cutsize_temp = 0
 
 	reject = 0
 	temp_reject = 0
@@ -108,8 +111,10 @@ def Sim_Ann(adj_matrix,n):
 		print "cutsize" + str(cutsize_temp)
 
 		if(delta_cost <= 0):
-			A = A_temp
-			B = B_temp
+			A = A_temp[:]
+			B = B_temp[:]
+			A_res = A
+			B_res = B
 			cost = cost_temp
 			cutsize = cutsize_temp
 			reject = 0
@@ -118,8 +123,10 @@ def Sim_Ann(adj_matrix,n):
 
 		elif ( math.exp(-(delta_cost/temperature)) > random.uniform(0,1)):
 			print "tp" + str (math.exp(-(delta_cost/temperature))) + str(random.uniform(0,1))
-			A = A_temp
-			B = B_temp
+			A = A_temp[:]
+			B = B_temp[:]
+			A_res = A
+			B_res = B
 			cost = cost_temp
 			cutsize = cutsize_temp
 			reject = 0
@@ -128,11 +135,11 @@ def Sim_Ann(adj_matrix,n):
 		else:
 			reject = reject + 1
 			print "rejected" + str(reject)
-			A_temp = A
-			B_temp = B
+			A_temp = A[:]
+			B_temp = B[:]
 			if(reject >= 5):
 				temp_reject = temp_reject + 1
-				temperature = temperature*math.pow(tempfact,i) 
+				temperature = temperature*math.pow(tempfact,temp_iteration) 
 				temp_iteration = temp_iteration + 1
 				if(temp_iteration>5):
 					temp_reject = 10
@@ -140,6 +147,8 @@ def Sim_Ann(adj_matrix,n):
 
 		print(A)
 		print(B)
+		print(A_res)
+		print(B_res)
 
 
 
