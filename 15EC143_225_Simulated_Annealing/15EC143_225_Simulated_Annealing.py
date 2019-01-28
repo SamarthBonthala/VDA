@@ -1,9 +1,8 @@
-# Kernighan Lin Algorithm for Circuit Partitioning
+# Simulated Annealing Algorithm for Circuit/Graph Partitioning
 # Authors: Samarth Bonthala, Tarun Mittal
   
 import random
 import math
-import numpy as np
 
 # Function to check if n is a power of 2 or not
 def isPowerOfTwo(n): 
@@ -33,7 +32,7 @@ def input_func(filename):
 
 # Computing the cost function
 # f = C + lambda*(Imbalance)
-# C = cutsize (sum of edge weights of all the crossover edge weights from A to B)
+# C = cutsize (sum of edge weights of all the crossover edges from A to B)
 # Imbalance = (no_of_nodes_A - no_of_nodes_B)^2
 # Returns cost and cutsize
 	
@@ -75,14 +74,9 @@ def Sim_Ann(adj_matrix,n):
 	tempfact = 0.85 # r value in (r^i)*T
 	temperature = 1 # T value
 	temp_iteration = 1 # iteration number
-	cost_func_factor = 0.5
+	cost_func_factor = 0.5 # Related to the cost function
 	A_temp = A
 	B_temp = B
-	# for i in range(no_of_nodes):
-	# 	if (i < no_of_nodes/2):
-	# 		A_temp.append(i)
-	# 	else:
-	# 		B_temp.append(i)
 	
 	A_res = A_temp
 	B_res = B_temp
@@ -95,7 +89,7 @@ def Sim_Ann(adj_matrix,n):
 	temp_reject = 0
 
 	while(temp_reject<5):
-		print"new"
+		print "new"
 
 		x = random.randint(0, no_of_nodes-1)
 		print(x)
@@ -117,7 +111,7 @@ def Sim_Ann(adj_matrix,n):
 		print "delta_cost" + str(delta_cost)
 		print "cutsize" + str(cutsize_temp)
 
-		if(delta_cost <= 0):
+		if(delta_cost <= 0): # Accept the soltuion when the cost decreases from previous iteration
 			A = A_temp[:]
 			B = B_temp[:]
 			A_res = A
@@ -128,7 +122,7 @@ def Sim_Ann(adj_matrix,n):
 			temp_reject = 0
 			print"1"
 
-		elif ( math.exp(-(delta_cost/temperature)) > random.uniform(0,1)):
+		elif ( math.exp(-(delta_cost/temperature)) > random.uniform(0,1)): # Accept the solution with a probability and only if the value is less than the random number generated between 0 and 1
 			print "tp" + str (math.exp(-(delta_cost/temperature))) + str(random.uniform(0,1))
 			A = A_temp[:]
 			B = B_temp[:]
@@ -139,16 +133,16 @@ def Sim_Ann(adj_matrix,n):
 			reject = 0
 			temp_reject = 0
 			print"2"
-		else:
+		else: # Increment reject counter and keep track of number of rejections 
 			reject = reject + 1
 			print "rejected" + str(reject)
 			A_temp = A[:]
 			B_temp = B[:]
-			if(reject >= 5):
+			if(reject >= 5): # If number of rejections for a particular temperature is greater than 5, go to next temperature
 				temp_reject = temp_reject + 1
 				temperature = temperature*math.pow(tempfact,temp_iteration) 
-				temp_iteration = temp_iteration + 1
-				if(temp_iteration>5):
+				temp_iteration = temp_iteration + 1 # Update the temperature iteration
+				if(temp_iteration>5): # Terminate the algorithm once 5 temperatures have been rejected
 					temp_reject = 10
 				print "rejectedtemp" + str(temp_reject)
 
@@ -158,8 +152,8 @@ def Sim_Ann(adj_matrix,n):
 		print(B_res)
 
 
-
-	return A,B, cutsize
+	# Return the two partitions and the cutsize between the two partitions
+	return A,B,cutsize
 	
 	
 def main():
@@ -202,11 +196,11 @@ def main():
 		return
 		
 	
-	A,B, cutsize = Sim_Ann(adj_matrix,n)
+	A,B,cutsize = Sim_Ann(adj_matrix,n)
 	print "Partitions are as follows:"
-	print(A)
-	print(B)
-	print(cutsize)
+	print "Partition A:",A
+	print "Partition B:",B
+	print "Cut Size: ",cutsize
 	
 	 
 main()
