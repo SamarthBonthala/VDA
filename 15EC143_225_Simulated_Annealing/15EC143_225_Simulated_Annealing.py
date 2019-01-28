@@ -53,12 +53,13 @@ def cost_func(A, B, adj_matrix, cost_func_factor):
 
 	return cost,cutsize
 
-# Function for Simulated Annealing ALgorithm
+# Function for Simulated Annealing Algorithm
 # Heuristic Algorithm for Partitioning
 # Inputs: adj_matrix and number of partitions needed, n
 
 def Sim_Ann(adj_matrix,n):
 	
+	#n = n/2
 	# Spl[it into two equal partitions randomly
 	A = []
 	B = []
@@ -151,7 +152,43 @@ def Sim_Ann(adj_matrix,n):
 		print(A_res)
 		print(B_res)
 
+	# no_ele_A = len(A)
+	# no_ele_B = len(B)
+	
+	# # Intialize the matrix to 0
+	# adj_mat_A = [[0 for i in range(no_ele_A)] for j in range(no_ele_A)]
+	# adj_mat_B = [[0 for i in range(no_ele_B)] for j in range(no_ele_B)]
 
+	# # Adjacency matrix of partition A
+	# x = 0
+	# for i in A:
+	# 	y = 0
+	# 	for j in A:
+	# 		adj_mat_A[x][y] = adj_matrix[i][j]
+	# 		y = y + 1
+	# 	x = x + 1
+
+	# # Adjacency matrix of partition B
+	# x = 0
+	# for i in B:
+	# 	y = 0
+	# 	for j in B:
+	# 		adj_mat_B[x][y] = adj_matrix[i][j]
+	# 		y = y + 1
+	# 	x = x + 1
+	
+	# # Making the function recursive for multiple/ n partitioning
+	# if(n<2):
+	# 	print (A)
+	# 	print (B)
+	# 	print "Cut Size: ",cutsize
+		
+	# if(n>1):
+	# 	A_1,B_1,cutsize_1,adj_mat_A1,adj_mat_B1 = Sim_Ann(adj_mat_A,n)
+	# 	A_2,B_2,cutsize_2,adj_mat_A2,adj_mat_B2 = Sim_Ann(adj_mat_B,n)
+			
+
+	
 	# Return the two partitions and the cutsize between the two partitions
 	return A,B,cutsize
 	
@@ -198,10 +235,9 @@ def main():
 	
 	A,B,cutsize = Sim_Ann(adj_matrix,n)
 	print "Partitions are as follows:"
-	print "Partition A:",A
-	print "Partition B:",B
-	print "Cut Size: ",cutsize
-	
-	 
+	print "Partition A:", A
+	print "Partition B:", B
+	print "Cut Size:",cutsize
+		 
 main()
 
