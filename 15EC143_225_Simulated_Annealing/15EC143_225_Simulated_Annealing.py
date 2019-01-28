@@ -63,6 +63,7 @@ def Sim_Ann(adj_matrix,n):
 	# Spl[it into two equal partitions randomly
 	A = []
 	B = []
+	cost_func_factor = 0.5 # Related to the cost function
 	
 	no_of_nodes = len(adj_matrix[0])
 	
@@ -72,10 +73,43 @@ def Sim_Ann(adj_matrix,n):
 		else:
 			B.append(i)
 			
+	# Portion of code for initial temperature calculation
+	# Idea: Run the algorithm for 4 times and compute difference in cutsize between the consecutive iterations
+	# Compute average and back calculate and obtain the initial temperature
+	
+	temp_part_A = A[:]
+	temp_part_B = B[:]
+	loop = 0
+	init_temp_arr = []
+
+	while(loop < 4):
+		x1 = random.randint(0, no_of_nodes-1)
+		if x1 in temp_part_A:
+			temp_part_A.remove(x1)
+			temp_part_B.append(x1)
+		else:
+			temp_part_B.remove(x1)
+			temp_part_A.append(x1)
+
+		cst, init_cutsize = cost_func(temp_part_A, temp_part_B, adj_matrix, cost_func_factor)
+		init_temp_arr.append(init_cutsize)
+		loop = loop + 1
+		
+	i = 0
+	sum = 0
+	while(i<3):
+		sum = sum + abs(init_temp_arr[i+1] - init_temp_arr[i])
+		i = i+1
+		
+	avg_cost = sum/3
+	initial_temperature = -avg_cost/math.log(0.9)
+		
+	print "Temperature:",initial_temperature
+		
 	tempfact = 0.85 # r value in (r^i)*T
 	temperature = 1 # T value
 	temp_iteration = 1 # iteration number
-	cost_func_factor = 0.5 # Related to the cost function
+	
 	A_temp = A
 	B_temp = B
 	
