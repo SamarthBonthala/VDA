@@ -135,8 +135,6 @@ def Sim_Ann(adj_matrix,n):
 		else:
 			reject = reject + 1
 			print "rejected" + str(reject)
-			# A_temp = A
-			# B_temp = B
 			if(reject >= 5):
 				temp_reject = temp_reject + 1
 				temperature = temperature*math.pow(tempfact,temp_iteration) 
