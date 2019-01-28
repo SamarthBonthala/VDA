@@ -115,8 +115,8 @@ def Sim_Ann(adj_matrix,n):
 		print "cutsize" + str(cutsize_temp)
 
 		if(delta_cost <= 0):
-			A = A_temp
-			B = B_temp
+			A = A_temp[:]
+			B = B_temp[:]
 			cost = cost_temp
 			cutsize = cutsize_temp
 			reject = 0
@@ -125,8 +125,8 @@ def Sim_Ann(adj_matrix,n):
 
 		elif ( math.exp(-(delta_cost/temperature)) > random.uniform(0,1)):
 			print "tp" + str (math.exp(-(delta_cost/temperature))) + str(random.uniform(0,1))
-			A = A_temp
-			B = B_temp
+			A = A_temp[:]
+			B = B_temp[:]
 			cost = cost_temp
 			cutsize = cutsize_temp
 			reject = 0
