@@ -72,7 +72,7 @@ def Sim_Ann(adj_matrix,n):
 			A.append(i)
 		else:
 			B.append(i)
-			
+		
 	# Portion of code for initial temperature calculation
 	# Idea: Run the algorithm for 4 times and compute difference in cutsize between the consecutive iterations
 	# Compute average and back calculate and obtain the initial temperature
@@ -104,7 +104,7 @@ def Sim_Ann(adj_matrix,n):
 	avg_cost = sum/3
 	initial_temperature = -avg_cost/math.log(0.9)
 		
-	print "Temperature:",initial_temperature
+	print "Initial Temperature (chosen for calculation):",initial_temperature
 		
 	tempfact = 0.85 # r value in (r^i)*T
 	temperature = 1 # T value
@@ -122,7 +122,14 @@ def Sim_Ann(adj_matrix,n):
 
 	reject = 0
 	temp_reject = 0
-
+	
+	# Keeping track of the best solution obtained so far - Global minima
+	best_part_A = A[:]
+	best_part_B = B[:]
+	best_cost = cost
+	
+	# Starting the iterations
+	
 	while(temp_reject<5):
 		print "new"
 
@@ -140,11 +147,16 @@ def Sim_Ann(adj_matrix,n):
 		print(A_temp)
 		print(B_temp)
 		cost_temp, cutsize_temp = cost_func(A_temp, B_temp, adj_matrix, cost_func_factor)
-
+		# If solution is accepted and cost has decreased, choose the best option
+		if(cost < best_cost):
+			best_cost = cost
+			best_part_A = A_temp[:]
+			best_part_B = B_temp[:]
+			
 		delta_cost = cost_temp - cost
 
-		print "delta_cost" + str(delta_cost)
-		print "cutsize" + str(cutsize_temp)
+		print "Delta_cost" + str(delta_cost)
+		print "Cutsize" + str(cutsize_temp)
 
 		if(delta_cost <= 0): # Accept the soltuion when the cost decreases from previous iteration
 			A = A_temp[:]
@@ -155,9 +167,8 @@ def Sim_Ann(adj_matrix,n):
 			cutsize = cutsize_temp
 			reject = 0
 			temp_reject = 0
-			print"1"
-
-		elif ( math.exp(-(delta_cost/temperature)) > random.uniform(0,1)): # Accept the solution with a probability and only if the value is less than the random number generated between 0 and 1
+			# print"1"
+		elif ( math.exp(-(delta_cost/temperature)) > random.uniform(0,1)): # Accept the solution with a probability
 			print "tp" + str (math.exp(-(delta_cost/temperature))) + str(random.uniform(0,1))
 			A = A_temp[:]
 			B = B_temp[:]
@@ -167,10 +178,10 @@ def Sim_Ann(adj_matrix,n):
 			cutsize = cutsize_temp
 			reject = 0
 			temp_reject = 0
-			print"2"
+			#print "2"
 		else: # Increment reject counter and keep track of number of rejections 
 			reject = reject + 1
-			print "rejected" + str(reject)
+			print "Rejected Iteration" + str(reject)
 			A_temp = A[:]
 			B_temp = B[:]
 			if(reject >= 5): # If number of rejections for a particular temperature is greater than 5, go to next temperature
@@ -179,52 +190,14 @@ def Sim_Ann(adj_matrix,n):
 				temp_iteration = temp_iteration + 1 # Update the temperature iteration
 				if(temp_iteration>5): # Terminate the algorithm once 5 temperatures have been rejected
 					temp_reject = 10
-				print "rejectedtemp" + str(temp_reject)
+				print "Rejected_Temperature: " + str(temp_reject)
 
 		print(A)
 		print(B)
 		print(A_res)
 		print(B_res)
 
-	# no_ele_A = len(A)
-	# no_ele_B = len(B)
-	
-	# # Intialize the matrix to 0
-	# adj_mat_A = [[0 for i in range(no_ele_A)] for j in range(no_ele_A)]
-	# adj_mat_B = [[0 for i in range(no_ele_B)] for j in range(no_ele_B)]
-
-	# # Adjacency matrix of partition A
-	# x = 0
-	# for i in A:
-	# 	y = 0
-	# 	for j in A:
-	# 		adj_mat_A[x][y] = adj_matrix[i][j]
-	# 		y = y + 1
-	# 	x = x + 1
-
-	# # Adjacency matrix of partition B
-	# x = 0
-	# for i in B:
-	# 	y = 0
-	# 	for j in B:
-	# 		adj_mat_B[x][y] = adj_matrix[i][j]
-	# 		y = y + 1
-	# 	x = x + 1
-	
-	# # Making the function recursive for multiple/ n partitioning
-	# if(n<2):
-	# 	print (A)
-	# 	print (B)
-	# 	print "Cut Size: ",cutsize
-		
-	# if(n>1):
-	# 	A_1,B_1,cutsize_1,adj_mat_A1,adj_mat_B1 = Sim_Ann(adj_mat_A,n)
-	# 	A_2,B_2,cutsize_2,adj_mat_A2,adj_mat_B2 = Sim_Ann(adj_mat_B,n)
-			
-
-	
-	# Return the two partitions and the cutsize between the two partitions
-	return A,B,cutsize
+	return best_part_A,best_part_B,best_cost
 	
 	
 def main():
@@ -267,11 +240,11 @@ def main():
 		return
 		
 	
-	A,B,cutsize = Sim_Ann(adj_matrix,n)
-	print "Partitions are as follows:"
+	A,B,cost = Sim_Ann(adj_matrix,n)
+	print "\n Best Partition until now is as follows and accepted:"
 	print "Partition A:", A
 	print "Partition B:", B
-	print "Cut Size:",cutsize
+	print "Least cost:",cost
 		 
 main()
 
