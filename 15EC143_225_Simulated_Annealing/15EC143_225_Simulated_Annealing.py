@@ -57,7 +57,7 @@ def cost_func(A, B, adj_matrix, cost_func_factor):
 # Heuristic Algorithm for Partitioning
 # Inputs: adj_matrix and number of partitions needed, n
 
-def Sim_Ann(adj_matrix,n):
+def Sim_Ann(adj_matrix):
 	
 	#n = n/2
 	# Spl[it into two equal partitions randomly
@@ -208,40 +208,8 @@ def main():
 	# Take input from the text file containing the adjacency matrix of unpartitioned graph
 	adj_matrix = input_func(filename)
 	
-	# When there is only on entry in the adjacency matrix
-	if (len(adj_matrix) == 1):
-		print "Only one node is present, partitioning not possible"
-		return
-		
-	# Enter number of partitions needed, n where n must be a power of 2
-	
-	print "Enter number of partitions needed (n has to be a power of 2): "
-	n = int(raw_input("\n"))
-	
-	if (isPowerOfTwo(n) == 0):
-		print "Number of partitions entered is not a power of 2 and therefore partitioning not possible."
-		
-	while(isPowerOfTwo(n) != 1):
-		n = int(raw_input("Re-enter value of n such that n is a power of 2. \n"))
-			
-	# Tackling corner cases
-		
-	# When number of partitions required are greater than number of nodes
-	if (n > len(adj_matrix[0])):
-		print "Number of nodes are less than partitions required. Partitioning not possible"
-		return
-		
-	# Running the KL Algorithm recursively
-	no_of_nodes = len(adj_matrix[0])
-	alp = [ i for i in range(no_of_nodes)]
-	
-	if (n == 1):
-		print alp
-		return
-		
-	
-	A,B,cost = Sim_Ann(adj_matrix,n)
-	print "\n Best Partition until now is as follows and accepted:"
+	A,B,cost = Sim_Ann(adj_matrix)
+	print "\nBest Partition until now is as follows and accepted:"
 	print "Partition A:", A
 	print "Partition B:", B
 	print "Least cost:",cost
