@@ -30,6 +30,18 @@ def input_func(filename):
   	
   	return adj_matrix;
 
+
+#calculate imbalance factor dynamically according to no of nodes
+def imbalance_calc(no_of_nodes):
+	a = -0.00003
+	b = 0.05
+	c = 1.3
+
+	cost_func_factor = a*(no_of_nodes*no_of_nodes) + b*(no_of_nodes) + c
+
+	return cost_func_factor
+
+
 # Computing the cost function
 # f = C + lambda*(Imbalance)
 # C = cutsize (sum of edge weights of all the crossover edges from A to B)
@@ -81,6 +93,7 @@ def Sim_Ann(adj_matrix):
 	temp_part_B = B[:]
 	loop = 0
 	init_temp_arr = []
+	cost_func_factor = imbalance_calc(no_of_nodes)
 
 	while(loop < 4):
 		x1 = random.randint(0, no_of_nodes-1)
