@@ -9,7 +9,7 @@ Do not have any extra blank row
 
 **Step 1**: Run the code on the command line either on Windows/ Ubuntu
 
-python KL_Partitioning.py
+python 15EC143_225_KL_Partitioning.py
 
 **Step 2**: When prompted to enter the name of the file containing the adjacency matrix, enter the name of the file.
 
@@ -45,7 +45,7 @@ Do not have any extra blank row
 
 **Step 1**: Run the code on the command line either on Windows/ Ubuntu
 
-python Simulated_Annealing.py
+python 15EC143_225_Simulated_Annealing.py
 
 **Step 2**: When prompted to enter the name of the file containing the adjacency matrix, enter the name of the file.
 
