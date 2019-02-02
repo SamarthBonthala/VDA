@@ -69,7 +69,6 @@ def cost_func(A, B, adj_matrix, cost_func_factor):
 
 def Sim_Ann(adj_matrix):
 	
-	#n = n/2
 	# Spl[it into two equal partitions randomly
 	A = []
 	B = []
@@ -115,7 +114,7 @@ def Sim_Ann(adj_matrix):
 	avg_cost = sum/3
 	initial_temperature = -avg_cost/math.log(0.9)
 		
-	print "Initial Temperature (chosen for calculation):",initial_temperature
+	print "Initial Temperature calculated:",initial_temperature
 		
 	tempfact = 0.85 # r value in (r^i)*T
 	temperature = 1 # T value
@@ -142,12 +141,9 @@ def Sim_Ann(adj_matrix):
 	# Starting the iterations
 	
 	while(temp_reject<5):
-		print "new"
 
 		x = random.randint(0, no_of_nodes-1)
-		print(x)
-		print(A)
-		print(B)
+		
 		if x in A:
 			A_temp.remove(x)
 			B_temp.append(x)
@@ -155,8 +151,6 @@ def Sim_Ann(adj_matrix):
 			B_temp.remove(x)
 			A_temp.append(x)
 
-		print(A_temp)
-		print(B_temp)
 		cost_temp, cutsize_temp = cost_func(A_temp, B_temp, adj_matrix, cost_func_factor)
 		# If solution is accepted and cost has decreased, choose the best option
 		if(cost < best_cost):
@@ -166,8 +160,8 @@ def Sim_Ann(adj_matrix):
 			
 		delta_cost = cost_temp - cost
 
-		print "Delta_cost" + str(delta_cost)
-		print "Cutsize" + str(cutsize_temp)
+		#print "Delta_cost" + str(delta_cost)
+		#print "Cutsize" + str(cutsize_temp)
 
 		if(delta_cost <= 0): # Accept the soltuion when the cost decreases from previous iteration
 			A = A_temp[:]
@@ -178,9 +172,8 @@ def Sim_Ann(adj_matrix):
 			cutsize = cutsize_temp
 			reject = 0
 			temp_reject = 0
-			# print"1"
 		elif ( math.exp(-(delta_cost/temperature)) > random.uniform(0,1)): # Accept the solution with a probability
-			print "tp" + str (math.exp(-(delta_cost/temperature))) + str(random.uniform(0,1))
+			#print "tp" + str (math.exp(-(delta_cost/temperature))) + str(random.uniform(0,1))
 			A = A_temp[:]
 			B = B_temp[:]
 			A_res = A
@@ -189,10 +182,9 @@ def Sim_Ann(adj_matrix):
 			cutsize = cutsize_temp
 			reject = 0
 			temp_reject = 0
-			#print "2"
 		else: # Increment reject counter and keep track of number of rejections 
 			reject = reject + 1
-			print "Rejected Iteration" + str(reject)
+			#print "Rejected Iteration" + str(reject)
 			A_temp = A[:]
 			B_temp = B[:]
 			if(reject >= 5): # If number of rejections for a particular temperature is greater than 5, go to next temperature
@@ -201,12 +193,12 @@ def Sim_Ann(adj_matrix):
 				temp_iteration = temp_iteration + 1 # Update the temperature iteration
 				if(temp_iteration>5): # Terminate the algorithm once 5 temperatures have been rejected
 					temp_reject = 10
-				print "Rejected_Temperature: " + str(temp_reject)
+				#print "Rejected_Temperature: " + str(temp_reject)
 
-		print(A)
-		print(B)
-		print(A_res)
-		print(B_res)
+		#print(A)
+		#print(B)
+		#print(A_res)
+		#print(B_res)
 
 	return best_part_A,best_part_B,best_cost
 	
@@ -220,7 +212,7 @@ def main():
 	adj_matrix = input_func(filename)
 	
 	A,B,cost = Sim_Ann(adj_matrix)
-	print "\nBest Partition until now is as follows and accepted:"
+	print "\nBest Partition until now is as follows:"
 	print "Partition A:", A
 	print "Partition B:", B
 	print "Least cost:",cost
