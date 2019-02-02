@@ -36,7 +36,7 @@ def imbalance_calc(no_of_nodes):
 	b = 0.05
 	c = 1.3
 
-	cost_func_factor = a*(no_of_nodes*no_of_nodes) + b*(no_of_nodes) + c
+	cost_func_factor = 1/(a*(no_of_nodes*no_of_nodes) + b*(no_of_nodes) + c)
 
 	return cost_func_factor
 
