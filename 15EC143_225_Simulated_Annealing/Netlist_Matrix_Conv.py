@@ -6,10 +6,10 @@
 import os
 
 # Input filenames of the form <name>.bench
-def netlist_to_adj_mat():
+def netlist_to_adj_mat(filename):
 	
-	print "Enter the name of the file where the netlist is stored."
-	filename = raw_input("\n")
+	#print "Enter the name of the file which contains the netlist."
+	#filename = raw_input("\n")
 	
 	f = open(filename,'r')
 

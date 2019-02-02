@@ -3,6 +3,8 @@
   
 import random
 import math
+import os
+from Netlist_Matrix_Conv import netlist_to_adj_mat
 
 # Function to check if n is a power of 2 or not
 def isPowerOfTwo(n): 
@@ -102,7 +104,7 @@ def Sim_Ann(adj_matrix):
 			temp_part_A.append(x1)
 
 		cst, init_cutsize = cost_func(temp_part_A, temp_part_B, adj_matrix, cost_func_factor)
-		init_temp_arr.append(init_cutsize)
+		init_temp_arr.append(cst)
 		loop = loop + 1
 		
 	i = 0
@@ -195,24 +197,23 @@ def Sim_Ann(adj_matrix):
 					temp_reject = 10
 				#print "Rejected_Temperature: " + str(temp_reject)
 
-		#print(A)
-		#print(B)
-		#print(A_res)
-		#print(B_res)
 
 	return best_part_A,best_part_B,best_cost
 	
 	
 def main():
 
-	print ("Enter the name of the file where the adjacency matrix is stored")
+	print ("Enter the name of the file containing the required netlist")
 	filename = raw_input("\n")
-
+	
+	# Converting the netlist to adjacency matrix
+	netlist_to_adj_mat(filename)
+	
 	# Take input from the text file containing the adjacency matrix of unpartitioned graph
-	adj_matrix = input_func(filename)
+	adj_matrix = input_func("inp_adj_mat.txt")
 	
 	A,B,cost = Sim_Ann(adj_matrix)
-	print "\nBest Partition until now is as follows:"
+	print "\nBest Partition obtained through Simulated Annealing is as follows:"
 	print "Partition A:", A
 	print "Partition B:", B
 	print "Least cost:",cost
