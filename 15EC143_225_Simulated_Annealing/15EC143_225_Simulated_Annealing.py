@@ -29,6 +29,16 @@ def input_func(filename):
 		adj_matrix.append(temp)
   	
   	return adj_matrix;
+  	
+# Calculate imbalance factor dynamically according to no of nodes
+def imbalance_calc(no_of_nodes):
+	a = -0.00003
+	b = 0.05
+	c = 1.3
+
+	cost_func_factor = a*(no_of_nodes*no_of_nodes) + b*(no_of_nodes) + c
+
+	return cost_func_factor
 
 
 #calculate imbalance factor dynamically according to no of nodes
@@ -75,7 +85,6 @@ def Sim_Ann(adj_matrix):
 	# Spl[it into two equal partitions randomly
 	A = []
 	B = []
-	cost_func_factor = 0.5 # Related to the cost function
 	
 	no_of_nodes = len(adj_matrix[0])
 	
@@ -95,6 +104,8 @@ def Sim_Ann(adj_matrix):
 	init_temp_arr = []
 	cost_func_factor = imbalance_calc(no_of_nodes)
 
+	cost_func_factor = imbalance_calc(no_of_nodes)
+	
 	while(loop < 4):
 		x1 = random.randint(0, no_of_nodes-1)
 		if x1 in temp_part_A:
