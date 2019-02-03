@@ -211,7 +211,7 @@ def main():
 	netlist_to_adj_mat(filename)
 	
 	# Enter number k for k partitions
-	print "Enter number of partitions required."
+	print "Enter number of partitions required. (Less than half of the number of nodes)"
 	k = int(raw_input("\n"))
 	
 	# Take input from the text file containing the adjacency matrix of unpartitioned graph
@@ -246,7 +246,7 @@ def main():
 		temp_arr = list(range(left_over_index,no_of_nodes))
 		partitions.append(temp_arr)
 		
-	print "\nInitial k partitons are as follows: "
+	print "\nInitial",k,"partitons are as follows: "
 	for j in range(len(partitions)):
 		print partitions[j]
 	
@@ -260,7 +260,7 @@ def main():
 				partitions[i] = A[:]
 				partitions[j] = B[:]
 	
-	print "\nRequired k partitons are as follows: "
+	print "\nRequired",k,"partitons are as follows: "
 	for j in range(len(partitions)):
 		print partitions[j]
 		 
