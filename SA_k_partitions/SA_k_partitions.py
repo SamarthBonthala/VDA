@@ -85,14 +85,23 @@ def Sim_Ann(adj_matrix, X, Y):
 
 	cost_func_factor = imbalance_calc(no_of_nodes)
 	
+	# Random number generation to shift to the alongside partition
+	ele_arr = []
+	for i in A:
+		ele_arr.append(i)
+	for i in B:
+		ele_arr.append(i)
+	length = len(ele_arr)
+	
 	while(loop < 4):
-		x1 = random.randint(0, no_of_nodes-1)
-		if x1 in temp_part_A:
-			temp_part_A.remove(x1)
-			temp_part_B.append(x1)
+		x1 = random.randint(0, length-1)
+		val = ele_arr[x1]
+		if val in temp_part_A:
+			temp_part_A.remove(val)
+			temp_part_B.append(val)
 		else:
-			temp_part_B.remove(x1)
-			temp_part_A.append(x1)
+			temp_part_B.remove(val)
+			temp_part_A.append(val)
 
 		cst, init_cutsize = cost_func(temp_part_A, temp_part_B, adj_matrix, cost_func_factor)
 		init_temp_arr.append(cst)
@@ -107,7 +116,7 @@ def Sim_Ann(adj_matrix, X, Y):
 	avg_cost = sum/3
 	initial_temperature = -avg_cost/math.log(0.9)
 		
-	print "Initial Temperature calculated:",initial_temperature
+	#print "Initial Temperature calculated:",initial_temperature
 		
 	tempfact = 0.85 # r value in (r^i)*T
 	temperature = 1 # T value
@@ -135,14 +144,15 @@ def Sim_Ann(adj_matrix, X, Y):
 	
 	while(temp_reject<5):
 
-		x = random.randint(0, no_of_nodes-1)
+		x = random.randint(0, length-1)
+		val1 = ele_arr[x]
 		
-		if x in A:
-			A_temp.remove(x)
-			B_temp.append(x)
+		if val1 in A:
+			A_temp.remove(val1)
+			B_temp.append(val1)
 		else:
-			B_temp.remove(x)
-			A_temp.append(x)
+			B_temp.remove(val1)
+			A_temp.append(val1)
 
 		cost_temp, cutsize_temp = cost_func(A_temp, B_temp, adj_matrix, cost_func_factor)
 		# If solution is accepted and cost has decreased, choose the best option
@@ -201,6 +211,7 @@ def main():
 	netlist_to_adj_mat(filename)
 	
 	# Enter number k for k partitions
+	print "Enter number of partitions required."
 	k = int(raw_input("\n"))
 	
 	# Take input from the text file containing the adjacency matrix of unpartitioned graph
@@ -214,22 +225,34 @@ def main():
 	partitions = []
 	no_of_nodes = len(adj_matrix[0])
 	
-	nodes_per_part = round(no_of_nodes/k)
+
+	nodes_per_part = math.ceil(float(no_of_nodes)/k)
 	temp_arr = []
+	partitions = []
 	
 	loop = 0
-	for i in range(no_of_nodes)
-		if (loop < 3):
+	for i in range(no_of_nodes):
+		if (loop < nodes_per_part):
 			loop = loop + 1
 			temp_arr.append(i)
-		if (loop == 3):
+		if (loop == nodes_per_part):
 			partitions.append(temp_arr)
 			temp_arr = []
 			loop = 0
-	if (no_of_nodes % k != 0):
-		left_over_index = nodes_per_part*k
-		temp_arr = left_over_index
 		
+	if (no_of_nodes%k != 0):
+		left_over_index = int(nodes_per_part)*len(partitions)
+		
+		temp_arr = list(range(left_over_index,no_of_nodes))
+		partitions.append(temp_arr)
+		
+	print "\nInitial k partitons are as follows: "
+	for j in range(len(partitions)):
+		print partitions[j]
+	
+	# Running Simulated Annealing Algorithm for between every 2 consecutive fixed partitions
+	# Convergence to the best possible solution is expected
+	
 	for i in range(len(partitions)):
 		for j in range(len(partitions)):
 			if (i < j):
@@ -240,7 +263,6 @@ def main():
 	print "\nRequired k partitons are as follows: "
 	for j in range(len(partitions)):
 		print partitions[j]
-		print "\n"
 		 
 main()
 
