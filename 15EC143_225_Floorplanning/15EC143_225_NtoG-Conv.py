@@ -82,3 +82,6 @@ def netlist_to_adj_mat():
 		f.write("\n")
 	f.close()
 	return nodes
+
+if __name__ == '__main__':
+	nodes = netlist_to_adj_mat()
