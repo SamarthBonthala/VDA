@@ -1,24 +1,25 @@
 from turtle import *
 
 def shape(label,x,y,a,b,sarah):
-	sarah.goto(x*10,y*10)
+	sarah.goto(x,y)
 	sarah.pendown()
-	sarah.forward(a*10)
+	sarah.forward(a)
 	sarah.left(90)
-	sarah.forward(b*10)
+	sarah.forward(b)
 	sarah.left(90)
-	sarah.forward(a*10)
+	sarah.forward(a)
 	sarah.left(90)
-	sarah.forward(b*10)
+	sarah.forward(b)
 	sarah.left(90)
 	sarah.penup()
 
-	sarah.goto((x+a/2)*10,(y+b/2)*10)
+	sarah.goto((x+a/2),(y+b/2))
 	sarah.write(label, False, align="center")
 
 
 wn = Screen()
 sarah = Turtle()
+wn.setworldcoordinates(0, 0, 50, 50)
 sarah.speed(0)
 
 node_type = [0,1,2,3,4]
