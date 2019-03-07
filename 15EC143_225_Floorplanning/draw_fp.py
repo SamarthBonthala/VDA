@@ -30,6 +30,6 @@ node_coord = [[0,0],[9,0],[0,6],[3,6],[6,8]]
 
 
 for i in range(len(node_type)):
-	shape(str(i),node_coord[i][0],node_coord[i][1],block_dimensions[node_type[i]][0],block_dimensions[node_type[i]][1],sarah)
+	shape(str(i+1),node_coord[i][0],node_coord[i][1],block_dimensions[node_type[i]][0],block_dimensions[node_type[i]][1],sarah)
 
 wn.exitonclick()

@@ -4,7 +4,7 @@
 # Output: List of blocks with the optimal dimensions and the co-ordinate of the lower left corner of each block
 
 
-def Stockmeyer(polish_exp, block_size):
+def area_coord(polish_exp, block_size):
 	# Construct a tree from the polish expression
 	polish_exp_temp = [2,5,'V',1,'H',3,7,4,'V','H',6,'V',8,'V','H']
 	#polish_exp_temp = [1,2,'V',3,'V',4,'V',5,'V',6,'V',7,'V',8,'V']
@@ -45,7 +45,7 @@ def Stockmeyer(polish_exp, block_size):
 		if (polish_exp_temp[i] in operators and polish_exp_temp[i] == 'H'):
 			right = stack.pop()
 			left = stack.pop()
-			arr = horizontal_simple(left,right)
+			arr = horizontal(left,right)
 			stack.append(arr)
 			
 			j = j+1
@@ -54,7 +54,7 @@ def Stockmeyer(polish_exp, block_size):
 		if (polish_exp_temp[i] in operators and polish_exp_temp[i] == 'V'):
 			top = stack.pop()
 			bottom = stack.pop()
-			arr = vertical_simple(top,bottom)
+			arr = vertical(top,bottom)
 			stack.append(arr)
 			
 			j = j+1
@@ -65,7 +65,7 @@ def Stockmeyer(polish_exp, block_size):
 	
 	return area,co_ord
 
-def vertical_simple(L,R):
+def vertical(L,R):
 	L_new = L[:]
 	R_new = R[:]
 	dim = []
@@ -74,7 +74,7 @@ def vertical_simple(L,R):
 	
 	return dim
 
-def horizontal_simple(L,R):
+def horizontal(L,R):
 	L_new = L[:]
 	R_new = R[:]
 	dim = []
@@ -93,37 +93,3 @@ def main():
 
 main()
 
-def vertical(L,R): # L and R are lists containing the possible dimensions of the two blocks under consideration 
-	# Sort the double dimensional array in increasing order of widths
-	L_new = L
-	L.sort()
-	R_new = R
-	R.sort()
-	print L_new
-	print R_new
-	combinations = []
-	comb_no = []
-	len_L = len(L_new[0])
-	len_R = len(R_new[0])
-
-	# Optimization to avoid the points not lieing on pareto optimal curve
-	for i in range(len_L):
-		for j in range(len_R):
-
-			temp_arr = []
-			temp_arr1 = [i,j]
-			reqd_width = L_new[i][0] + R_new[j][0]
-			temp_arr.append(reqd_width)
-			if(L_new[i][1] > R_new[j][1]):
-				reqd_height = L_new[i][1]
-				temp_arr.append(reqd_height)
-				combinations.append(temp_arr)
-				j = j+1
-				#i = i+1
-			else:
-				reqd_height = R_new[j][1]
-				temp_arr.append(reqd_height)
-				combinations.append(temp_arr)
-				#j = j+1
-				i = i+1
-			comb_no.append(temp_arr1)

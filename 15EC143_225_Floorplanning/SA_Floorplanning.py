@@ -3,7 +3,12 @@
 import random
 import math
 import os
+from turtle import *
 from Netlist_to_AdjMatrix import netlist_to_adj_mat
+from draw_fp import shape
+from stockmeyer import area_coord
+from stockmeyer import vertical
+from stockmeyer import horizontal
 
 # Input Function
 def input_func(filename):
@@ -64,6 +69,25 @@ def move2(polish_exp):
 	operator = ['H','V']
 	
 	
+def wirelength(adj_matrix, block_dimensions, node_no, node_coord):
+	weight = 0
+	n = len(adj_matrix[0])
+	
+	for i in range(n):
+
+		x1 = node_coord[i][0] + (block_dimensions[node_no[i]][0])/2
+		y1 = node_coord[i][1] + (block_dimensions[node_no[i]][1])/2
+
+		for j in range(n):
+			if(adj_matrix[i][j] !=0):
+				x2 = node_coord[j][0] + (block_dimensions[node_no[j]][0])/2
+				y2 = node_coord[j][1] + (block_dimensions[node_no[j]][1])/2
+
+				dist = math.sqrt((x2-x1)**2 + (y2 - y1)**2)
+
+				weight = weight + dist*adj_matrix[i][j]
+
+	return weight
 	
 	
 def annealing(adj_matrix, blocks, block_sizes):
@@ -231,7 +255,24 @@ def main():
 	print x
 		
 	# Run simulated annealing algorithm for obtaining the optimal floorplan
-	#best_polish_exp, best_area, best_coord = annealing(adj_matrix, blocks, block_sizes)
+	#best_polish_exp, best_area, best_coord, block_dim = annealing(adj_matrix, blocks, block_sizes)
+	
+	wn = Screen()
+	sarah = Turtle()
+	wn.setworldcoordinates(0, 0, 50, 50)
+	sarah.speed(0)
+
+	#node_type = [0,1,2,3,4]
+
+	#block_dimensions = [[9,6],[6,8],[3,6],[3,7],[6,5]]
+
+	#node_coord = [[0,0],[9,0],[0,6],[3,6],[6,8]]
+
+
+	for i in range(len(node_type)):
+		shape(str(i),best_coord[i][0],best_coord[i][1],block_dim[node_type[i]][0],block_dim[node_type[i]][1],sarah)
+
+	wn.exitonclick()
 	
 main()	
 	
