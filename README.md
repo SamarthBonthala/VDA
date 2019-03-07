@@ -61,7 +61,7 @@ Best partition out of all the accepted solutions is obtained as the output where
 
 3. Initial Temperature Calculation – Simulated annealing requires fixing a temperature value and instead of arbitrarily choosing the temperature value, the annealing algorithm is run 4 times and average of the delta costs between trials is computed and initial temperature is found out using the formula Inital temp = - (Delta_cost_average) / ln(0.9)
 
-##Assignment 3 - Simulated Annealing for Floorplanning
+## Assignment 3 - Simulated Annealing for Floorplanning
 
 Simulated annealing is a heuristic algorithm employed very often in CAD tools for various processes involved in Physical Design such as partitioning and floorplanning. 
 
