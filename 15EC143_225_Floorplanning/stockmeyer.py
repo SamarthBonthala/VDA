@@ -124,7 +124,8 @@ def area_coord(polish_exp, block_size):
 			print("coord",co_ord)
 			#j = j+1
 		i = i+1
-		
+	
+	co_ord[no_of_blocks-1] = new[:]	
 	size = stack.pop()
 	area = size[0]*size[1] # Area spanned by this configuration
 	
@@ -170,7 +171,7 @@ def main():
 	block_sizes = [[2,4],[1,3],[3,3],[3,5],[3,2],[5,3],[1,2],[2,4]]
 
 	print("coord",node_coord)
-	for i in range(len(block_sizes)-1):
+	for i in range(len(block_sizes)):
 		shape(str(i+1),node_coord[i][0],node_coord[i][1],block_sizes[i][0],block_sizes[i][1],sarah)
 
 	wn.exitonclick()
