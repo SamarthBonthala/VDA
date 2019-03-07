@@ -8,7 +8,7 @@ def Stockmeyer(polish_exp, block_size):
 	# Construct a tree from the polish expression
 	polish_exp_temp = [2,5,'V',1,'H',3,7,4,'V','H',6,'V',8,'V','H']
 	#polish_exp_temp = [1,2,'V',3,'V',4,'V',5,'V',6,'V',7,'V',8,'V']
-	print polish_exp_temp
+	
 	operands = []
 	operators = ['H','V']
 	block_sizes = [[2,4],[1,3],[3,3],[3,5],[3,2],[5,3],[1,2],[2,4]]
@@ -19,7 +19,7 @@ def Stockmeyer(polish_exp, block_size):
 			operands.append(i)
 		
 	no_of_blocks = len(operands)
-	co_ord = dict()
+	co_ord = [0]*no_of_blocks
 	
 	# Parsing through the Polish expression is same as Post order traversal of a binary tree
 	# Stack creation to find the minimum area of the block
@@ -27,31 +27,43 @@ def Stockmeyer(polish_exp, block_size):
 	
 	stack = []
 	stk_blk = []
-	i = 0
-	j = 0
+	i = 0 # Loop variable parsing through Polish expression element by element
+	j = 0 # Number of times blocks have been combined
 	# Computing the area occupied by the orientation of all blocks for the above Polish expression
 	while(i < len(polish_exp_temp)):
+	
 		if (polish_exp_temp[i] in operands):
-			stack.append(block_sizes[(polish_exp_temp[i]-1)])
-			print stack # Appending block sizes to the array
+			stack.append(block_sizes[(polish_exp_temp[i]-1)]) # Appending block sizes to the array
+			stk_blk.append(polish_exp_temp[i])
+			if (len(stkblk) == 3 and j == 0):
+				temp = stkblk[1]
+				co_ord[temp-1] = [0,0]
+			if (len(stack) == 2 and j == 0):
+				temp = stk_blk[0]
+				co_ord[temp-1] = [0,0]
+				
 		if (polish_exp_temp[i] in operators and polish_exp_temp[i] == 'H'):
 			right = stack.pop()
-			print "Right",right
 			left = stack.pop()
-			print "Left",left
 			arr = horizontal_simple(left,right)
 			stack.append(arr)
-			print stack
+			
+			j = j+1
+			
+			
 		if (polish_exp_temp[i] in operators and polish_exp_temp[i] == 'V'):
 			top = stack.pop()
 			bottom = stack.pop()
 			arr = vertical_simple(top,bottom)
 			stack.append(arr)
+			
+			j = j+1
 		i = i+1
+		
 	size = stack.pop()
 	area = size[0]*size[1] # Area spanned by this configuration
 	
-	return area,
+	return area,co_ord
 
 def vertical_simple(L,R):
 	L_new = L[:]

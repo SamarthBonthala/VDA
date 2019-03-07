@@ -6,11 +6,8 @@
 import os
 
 # Input filenames of the form <name>.bench
-def netlist_to_adj_mat():
-	
-	print "Enter the name of the file where the netlist is stored."
-	filename = raw_input("\n")
-	
+def netlist_to_adj_mat(filename):
+
 	f = open(filename,'r')
 
 	data = f.readlines();
@@ -55,9 +52,6 @@ def netlist_to_adj_mat():
 		edges = temp.split(", ")
 		gate_names_ops[loop] = edges
 		loop = loop + 1
-	
-	#print "Gates and their inputs: ", gate_names_ops
-	#print "Outputs of various gates: ", init_outputs
 
 	
 	no_of_nodes = len(gate_names_ops)
@@ -83,5 +77,5 @@ def netlist_to_adj_mat():
 	f.close()
 	return nodes
 
-if __name__ == '__main__':
-	nodes = netlist_to_adj_mat()
+#if __name__ == '__main__':
+#	nodes = netlist_to_adj_mat()
