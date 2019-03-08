@@ -79,14 +79,14 @@ def post_to_inorder(polish_exp_temp,operators,operands):
 
 		#print("inorder", inorder)
 	return inorder
-def area_coord(polish_exp_temp, block_size):
+def area_coord(polish_exp_temp, block_sizes):
 	# Construct a tree from the polish expression
-	polish_exp_temp = [2,5,'V',1,'H',3,7,4,'V','H',6,'V',8,'V','H']
+	#polish_exp_temp = [2,5,'V',1,'H',3,7,4,'V','H',6,'V',8,'V','H']
 	#polish_exp_temp = [1,2,'V',3,'V',4,'V',5,'V',6,'V',7,'V',8,'V']
 	
 	operands = []
 	operators = ['H','V']
-	block_sizes = [[2,4],[1,3],[3,3],[3,5],[3,2],[5,3],[1,2],[2,4]]
+	#block_sizes = [[2,4],[1,3],[3,3],[3,5],[3,2],[5,3],[1,2],[2,4]]
 	for i in polish_exp_temp:
 		if i in operators:
 			continue
@@ -101,7 +101,6 @@ def area_coord(polish_exp_temp, block_size):
 	# Convention: xyH means x is below y and xyV means x is to the left of y
 	
 	stack = []
-	stk_blk = []
 	new = [0,0]
 	i = 0 # Loop variable parsing through Polish expression element by element
 	j = 0 # Number of times blocks have been combined
@@ -111,14 +110,14 @@ def area_coord(polish_exp_temp, block_size):
 		if (polish_exp_temp[i] in operands):
 			#stack.append(block_sizes[(polish_exp_temp[i]-1)]) # Appending block sizes to the array
 			stack.append([polish_exp_temp[i],block_sizes[(polish_exp_temp[i]-1)]])
-			print(polish_exp_temp[i])
-			print("stack",stack)
+			#print(polish_exp_temp[i])
+			#print("stack",stack)
 				
 		elif (polish_exp_temp[i] in operators and polish_exp_temp[i] == 'V'):
 			right = stack.pop()
-			print("right",right)
+			#print("right",right)
 			left = stack.pop()
-			print("left",left)
+			#print("left",left)
 			arr = vertical(left[1],right[1])
 			if(right[0]>no_of_blocks):
 				x =  right[2]
@@ -129,12 +128,12 @@ def area_coord(polish_exp_temp, block_size):
 			
 		elif (polish_exp_temp[i] in operators and polish_exp_temp[i] == 'H'):
 			top = stack.pop()
-			print("top",top)
+			#print("top",top)
 			if(len(stack)==0):
 				stack.append(top)
 				break
 			bottom = stack.pop()
-			print("bottom",bottom)
+			#print("bottom",bottom)
 			arr = horizontal(top[1],bottom[1])
 			if(top[0]>no_of_blocks):
 				x =  top[2]
@@ -167,7 +166,7 @@ def area_coord(polish_exp_temp, block_size):
 			co_ord[inorder[i + 1]-1] = [co_ord[inorder[i-1]-1][0], block_sizes[inorder[i-1]-1][1]+ co_ord[inorder[i-1]-1][1] ]
 
 
-		print("co_ord", co_ord)
+		#print("co_ord", co_ord)
 		i = i + 2
 
 
@@ -188,34 +187,34 @@ def horizontal(L,R):
 	dim = []
 	dim.append(max(L_new[0],R_new[0])) # Consider the maximum width possible
 	dim.append(L_new[1]+R_new[1]) # Add the heights as the two blocks are seperated by vertical cut
-	print("dim", dim)
+	#print("dim", dim)
 
 	return dim
 	
-def main():
+# def main():
 
-	# L = [2,3]
-	# R = [2,4]
-	# arr =[]
-	# Stockmeyer(2,3)
-	area, node_coord,size = area_coord(2,3)	
+# 	# L = [2,3]
+# 	# R = [2,4]
+# 	# arr =[]
+# 	# Stockmeyer(2,3)
+# 	area, node_coord,size = area_coord(2,3)	
 
-	wn = Screen()
-	sarah = Turtle()
-	wn.setworldcoordinates(0, 0, size[1][0]+5,size[1][1]+5)
-	sarah.speed(0)
+# 	wn = Screen()
+# 	sarah = Turtle()
+# 	wn.setworldcoordinates(0, 0, size[1][0]+5,size[1][1]+5)
+# 	sarah.speed(0)
 
-	node_type = [0,1,2,3,4]
+# 	node_type = [0,1,2,3,4]
 
-	block_dimensions = [[9,6],[6,8],[3,6],[3,7],[6,5]]
+# 	block_dimensions = [[9,6],[6,8],[3,6],[3,7],[6,5]]
 
-	block_sizes = [[2,4],[1,3],[3,3],[3,5],[3,2],[5,3],[1,2],[2,4]]
+# 	block_sizes = [[2,4],[1,3],[3,3],[3,5],[3,2],[5,3],[1,2],[2,4]]
 
-	print("coord",node_coord)
-	for i in range(len(block_sizes)):
-		shape(str(i+1),node_coord[i][0],node_coord[i][1],block_sizes[i][0],block_sizes[i][1],sarah)
+# 	print("coord",node_coord)
+# 	for i in range(len(block_sizes)):
+# 		shape(str(i+1),node_coord[i][0],node_coord[i][1],block_sizes[i][0],block_sizes[i][1],sarah)
 
-	wn.exitonclick()
+# 	wn.exitonclick()
 
-main()
+# main()
 
