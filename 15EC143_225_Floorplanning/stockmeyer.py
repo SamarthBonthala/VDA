@@ -17,11 +17,69 @@ def shape(label,x,y,a,b,sarah):
 	sarah.left(90)
 	sarah.penup()
 
-	sarah.goto((x+a/2),(y+b/2))
+	sarah.goto((x+a/2.0),(y+b/2.0))
 	sarah.write(label, False, align="center")
 
+def check_if_done(polish_exp_temp, inorder, done, done_index):
+	for i in range(len(done)):
+		if (polish_exp_temp[i] in inorder):
+			done_index = i + 1
+		else:
+			break
 
-def area_coord(polish_exp, block_size):
+	return done_index
+
+def post_to_inorder(polish_exp_temp,operators,operands):
+	inorder = []
+	num_stack = []
+	char_stack = []
+	num = 1
+	done = [0]*len(polish_exp_temp)
+	done_index = 0
+
+	i = 0
+	while(len(inorder)<len(polish_exp_temp)):
+
+		x = polish_exp_temp[i]
+
+		if( (x in operands) and (num == 1) ):
+			#print("1")
+			inorder.append(x)
+			num = 0
+			i = check_if_done(polish_exp_temp,inorder,done,done_index)
+			#num_stack.clear()
+			#char_stack.clear()
+			del num_stack[:]
+			del char_stack[:]
+		elif((x in operands) and (num == 0) ):
+			#print("2")
+			num_stack.append(x)
+			i = i + 1
+
+		elif((x in operators) and ((len(num_stack) - 1) == (len(char_stack)))):
+			#print("3")
+			inorder.append(x)
+			num = 1
+			i = check_if_done(polish_exp_temp,inorder,done,done_index)
+			# num_stack.clear()
+			# char_stack.clear()
+			if(len(num_stack)>0):
+				inorder.append(num_stack[0])
+				num = 0
+				i = check_if_done(polish_exp_temp,inorder,done,done_index)
+
+			del num_stack[:]
+			del char_stack[:]
+
+		elif((x in operators) and ((len(num_stack) - 1) != (len(char_stack)))):
+			#print("4")
+			char_stack.append(x)
+			i = i + 1
+
+
+		#print("inorder", inorder)
+	return inorder
+def area_coord(polish_exp_temp, block_size):
 	# Construct a tree from the polish expression
 	polish_exp_temp = [2,5,'V',1,'H',3,7,4,'V','H',6,'V',8,'V','H']
 	#polish_exp_temp = [1,2,'V',3,'V',4,'V',5,'V',6,'V',7,'V',8,'V']
@@ -55,13 +113,6 @@ def area_coord(polish_exp, block_size):
 			stack.append([polish_exp_temp[i],block_sizes[(polish_exp_temp[i]-1)]])
 			print(polish_exp_temp[i])
 			print("stack",stack)
-			# stk_blk.append(polish_exp_temp[i])
-			# if (len(stk_blk) == 3 and j == 0):
-			# 	temp = stk_blk[1]
-			# 	co_ord[temp-1] = [0,0]
-			# if (len(stack) == 2 and j == 0):
-			# 	temp = stk_blk[0]
-			# 	co_ord[temp-1] = [0,0]
 				
 		elif (polish_exp_temp[i] in operators and polish_exp_temp[i] == 'V'):
 			right = stack.pop()
@@ -74,24 +125,6 @@ def area_coord(polish_exp, block_size):
 			else:
 				x = right[0]
 			stack.append([left[0]*no_of_blocks,arr,x])
-			print("stack H",stack)
-
-			if(left[0]>no_of_blocks and right[0]>no_of_blocks):
-				continue
-			elif(right[0]<no_of_blocks and left[0] > no_of_blocks):
-				co_ord[right[0]-1] = [co_ord[left[2]-1][0] + block_sizes[left[2]-1][0],co_ord[left[2]-1][1]]
-			elif(right[0]>no_of_blocks and left[0] < no_of_blocks):
-				co_ord[left[0]-1] = [co_ord[right[2]-1][0] + block_sizes[right[2]-1][0],co_ord[right[2]-1][1]]
-			elif(right[0]<no_of_blocks and left[0] < no_of_blocks):
-				co_ord[left[0]-1] =  new[:]
-				co_ord[right[0]-1] = [new[0]+ left[1][0] , new[1] ]
-			
-			new[:] = arr[:]
-
-			print("new", new)
-			print("coord",co_ord)
-
-			#j = j+1
 			
 			
 		elif (polish_exp_temp[i] in operators and polish_exp_temp[i] == 'H'):
@@ -108,29 +141,37 @@ def area_coord(polish_exp, block_size):
 			else:
 				x = top[0]
 			stack.append([bottom[0]*no_of_blocks,arr,x])
-			print("stack V",stack)
-			if(top[0]>no_of_blocks and bottom[0]>no_of_blocks):
-				continue
-			elif(top[0]<no_of_blocks and bottom[0]>no_of_blocks):
-				co_ord[top[0]-1] = [co_ord[bottom[2]-1][0], co_ord[bottom[2]-1][1] + block_sizes[bottom[2]-1][1]]
-			elif(top[0]>no_of_blocks and bottom[0]<no_of_blocks):
-				co_ord[bottom[0]-1] = [co_ord[top[2]-1][0], co_ord[top[2]-1][1] + block_sizes[top[2]-1][1]]
-			elif(top[0]<no_of_blocks and bottom[0]<no_of_blocks):
-				co_ord[bottom[0]-1] = new[:]
-				co_ord[top[0]-1] = [new[0] + bottom[1][0] , new[1]]
-			new[:] = arr[:]
 
-			print("new", new)
-			print("coord",co_ord)
-			#j = j+1
 		i = i+1
 	
-	co_ord[no_of_blocks-1] = new[:]	
+	# co_ord[no_of_blocks-1] = new[:]	
 	size = stack.pop()
-	area = size[0]*size[1] # Area spanned by this configuration
-	
+	area = size[1][0]*size[1][1] # Area spanned by this configuration
 
-	return area,co_ord
+
+	inorder = post_to_inorder(polish_exp_temp, operators, operands)
+	print(inorder)
+
+
+	new = [0,0]
+	co_ord[inorder[0]-1] = new[:]
+	i = 1
+	num = 0
+	op = 'V'
+
+	while(i<len(inorder)):
+		if(inorder[i] == 'V'):
+			co_ord[inorder[i + 1]-1] = [co_ord[inorder[i-1]-1][0] + block_sizes[inorder[i-1]-1][0], co_ord[inorder[i-1]-1][1] ]
+			#co_ord[inorder[i + 1]-1] = [new[0] + ] 
+		elif(inorder[i] == 'H'):
+			co_ord[inorder[i + 1]-1] = [co_ord[inorder[i-1]-1][0], block_sizes[inorder[i-1]-1][1]+ co_ord[inorder[i-1]-1][1] ]
+
+
+		print("co_ord", co_ord)
+		i = i + 2
+
+
+	return area,co_ord,size
 
 def vertical(L,R):
 	L_new = L[:]
@@ -157,11 +198,11 @@ def main():
 	# R = [2,4]
 	# arr =[]
 	# Stockmeyer(2,3)
-	area, node_coord = area_coord(2,3)	
+	area, node_coord,size = area_coord(2,3)	
 
 	wn = Screen()
 	sarah = Turtle()
-	wn.setworldcoordinates(0, 0, 50, 50)
+	wn.setworldcoordinates(0, 0, size[1][0]+5,size[1][1]+5)
 	sarah.speed(0)
 
 	node_type = [0,1,2,3,4]
