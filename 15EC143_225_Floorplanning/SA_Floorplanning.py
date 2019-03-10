@@ -3,6 +3,7 @@
 import random
 import math
 import os
+import time
 from turtle import *
 from Netlist_to_AdjMatrix import netlist_to_adj_mat
 from stockmeyer import area_coord
@@ -56,7 +57,7 @@ def move1(polish_exp):
 		else:
 			operands.append(i)
 	
-	print("len of operands", len(operands))
+	# print("len of operands", len(operands))
 	rand_no = random.randint(0,len(operands)-1)
 	no1 = operands[rand_no]
 	if (rand_no == len(operands)-1):
@@ -84,14 +85,14 @@ def move2(polish_exp):
 	loc = []
 	i = 0
 
-	print("pol_exp_temp", polish_exp_temp)
+	# print("pol_exp_temp", polish_exp_temp)
 	while(i<len(polish_exp_temp)):
 
 		if(polish_exp_temp[i] == 'V' or polish_exp_temp[i] == 'H' ):
 			loc.append(i)
 			len_chain.append(1)
 			i = i +1
-			print("loc", loc)
+			# print("loc", loc)
 
 			if(i == len(polish_exp_temp) ):
 				break
@@ -110,8 +111,8 @@ def move2(polish_exp):
 	if(len_loc>1):
 		rand_loc = random.randint(0, len_loc-1)
 
-	print("loc", loc)
-	print("rand_loc", rand_loc)
+	# print("loc", loc)
+	# print("rand_loc", rand_loc)
 
 	i = loc[rand_loc]
 	while (i < (loc[rand_loc] + len_chain[rand_loc] )):
@@ -133,6 +134,7 @@ def move3(polish_exp):
 	adjacent = []
 	location = []
 
+	# print("polish_exp", polish_exp)
 	for i in range(len_exp-1):
 		temp_arr = []
 		if(polish_exp_temp[i] in operator and polish_exp_temp[i+1] in operand):
@@ -146,8 +148,11 @@ def move3(polish_exp):
 			adjacent.append(temp_arr)
 			location.append(i)
 
+	# print("adjacent", adjacent)
 	len_adj = len(adjacent)
-	rand_no = random.randint(0,len(adjacent)-1)
+	rand_no = 0
+	if(len_adj>1):
+		rand_no = random.randint(0,len(adjacent)-1)
 
 	swap = adjacent[rand_no]
 	swap_loc = location[rand_no]
@@ -175,7 +180,7 @@ def balloting_prop(polish_exp,swap_loc):
 			i = i+1
 		else:
 			flag = 1
-			print("flagggggg")
+			# print("flagggggg")
 
 			return 1
 
@@ -185,7 +190,7 @@ def balloting_prop(polish_exp,swap_loc):
 
 def move(polish_expression):
 
-	print("polish_expression" , polish_expression)
+	# print("polish_expression" , polish_expression)
 	polish_exp_temp = polish_expression[:]
 
 	move_no = random.randint(1,3)
@@ -197,8 +202,8 @@ def move(polish_expression):
 		polish_exp_temp1 = move2(polish_exp_temp)
 	else:
 		polish_exp_temp1, swap_loc = move3(polish_exp_temp)
-		if (balloting_prop(polish_exp_temp1,swap_loc) == 1):
-			polish_exp_temp1, move_no = move(polish_exp_temp)
+		while (balloting_prop(polish_exp_temp1,swap_loc) == 1):
+			polish_exp_temp1, move_no = move3(polish_exp_temp)
 
 	return polish_exp_temp1, move_no
 
@@ -224,22 +229,22 @@ def wirelength(adj_matrix, block_dimensions, node_coord):
 	return weight
 
 def cost_func_param(adj_matrix):
-	cost_param = 0.75
+	cost_param = 0.5
 	return cost_param
 
 def cost_func(polish_expression, block_dimensions, adj_matrix):
 	# Cost = Area + cost_func_factor*wirelength
-	area, block_coord, size = area_coord(polish_expression, block_dimensions)
+	area, block_coord, size = area_coord(polish_expression[:], block_dimensions)
 
 	wirelen = wirelength(adj_matrix, block_dimensions, block_coord)
 
 	cost_param = cost_func_param(adj_matrix)
 
-	print("area", area)
-	print("wirelen", wirelen)
-	print("size", (size[1] - size[0])*(size[1] - size[0]))
+	# print("area", area)
+	# print("wirelen", wirelen)
+	# print("size", (size[1] - size[0])*(size[1] - size[0]))
 
-	cost = area + cost_param*wirelen + (size[1] - size[0])*(size[1] - size[0])
+	cost = 12*area + cost_param*wirelen + 1.2*(size[1] - size[0])*(size[1] - size[0])
 
 	return cost,size, area, block_coord
 
@@ -282,8 +287,8 @@ def annealing(adj_matrix, blocks, block_dimensions):
 
 		# Choose move using the move function and the move function returns the polish expression after moving
 		pol_exp_temp, move_no = move(pol_exp_temp)
-		print("pol_exp_temp" ,pol_exp_temp)
-		print("move_no", move_no)
+		# print("pol_exp_temp" ,pol_exp_temp)
+		# print("move_no", move_no)
 		# move_no = random.randint(1, 3) # Generate a random number from 1 to 3 to select the type of move
 		# if(move_no == 1):
 		# 	pol_exp_temp = move1(pol_exp_temp)
@@ -308,12 +313,12 @@ def annealing(adj_matrix, blocks, block_dimensions):
 	avg_cost = sum/4
 	initial_temperature = -avg_cost/math.log(0.9)
 		
-	print "Initial Temperature calculated:",initial_temperature
+	print ("Initial Temperature calculated:",initial_temperature)
 	
 	# Annealing algorithm begins here
 
 	tempfact = 0.85 # r value in (r^i)*T to constantly decrease temperature after old temperature is rejected
-	temperature = 1 # T value
+	temperature = initial_temperature # T value
 	temp_iteration = 1 # iteration number
 	
 	polish_exp = polish_expression[:] # Initial expression (at t=0)
@@ -330,19 +335,23 @@ def annealing(adj_matrix, blocks, block_dimensions):
 	best_polish_exp = polish_exp_temp[:]
 	#best_area,best_coord, best_size = area_coord(polish_exp_temp, block_dimensions)
 	N = len(adj_matrix[0])
-
+	no_of_moves = 0
+	uphill  = 0
 	# Starting the annealing process 
 	
 	#while(temp_reject<5):
-	while(temperature > 0.5): # Until the temperature reaches 0.5, keep iterating
+	timeout = time.time() + 3600
+	while(temperature > (initial_temperature/10000) and time.time()<timeout): # Until the temperature reaches 0.5, keep iterating
 
 		# Choose move using the move function and the move function returns the polish expression after moving
 		polish_exp_temp , move_no = move(polish_exp_temp)
-		print("polish_exp_temp", polish_exp_temp)
-		print("move_no", move_no)
+		no_of_moves = no_of_moves + 1
+
+		# print("polish_exp_temp", polish_exp_temp)
+		# print("move_no", move_no)
 
 		cost_temp, size_temp, area_temp, coord_temp = cost_func(polish_exp_temp, block_dimensions,adj_matrix)
-		print("coord_temp", coord_temp)
+		# print("coord_temp", coord_temp)
 		# If solution is accepted and cost has decreased, choose the best option
 		if(cost < best_cost):
 			best_cost = cost
@@ -369,14 +378,21 @@ def annealing(adj_matrix, blocks, block_dimensions):
 			polish_exp = polish_exp_temp[:]
 			reject = 0
 			temp_reject = 0
+			uphill = uphill + 1
 		else: # Increment reject counter and keep track of number of rejections 
 			reject = reject + 1
 			#print "Rejected Iteration" + str(reject)
-			if(reject > N): # If number of rejections for a particular temperature is greater than k*no_of_blocks, go to next temperature
-				temp_reject = temp_reject + 1
-				temperature = temperature*math.pow(tempfact,temp_iteration) 
-				temp_iteration = temp_iteration + 1 # Update the temperature iteration
+		if(uphill > N or no_of_moves>2*N): # If number of rejections for a particular temperature is greater than k*no_of_blocks, go to next temperature
+				
+			uphill = 0
+			no_of_moves = 0
+			temp_reject = temp_reject + 1
+			temperature = temperature*math.pow(tempfact,temp_iteration) 
+			print("new temp ", temperature)
+			temp_iteration = temp_iteration + 1 # Update the temperature iteration
 
+
+	# print("initial_temperature", initial_temperature)
 
 	return best_polish_exp, best_area, best_coord, best_size
 	
@@ -410,18 +426,23 @@ def main():
 		block_dimensions[j] = block_dim[i]
 		j = j+1
 		
-	print("block_dimensions", block_dimensions)
+	
 	# Run simulated annealing algorithm for obtaining the optimal floorplan
 	best_polish_exp, best_area, best_coord, best_size = annealing(adj_matrix, block_names, block_dimensions)
 	
-	print("best_coord", best_coord)
+	# print("best_coord", best_coord)
+	# print("block_dimensions", block_dimensions)
+	print("Best Polish Expression ", best_polish_exp)
+	print("Best Size " + str( best_area) +  " = "+ str( best_size[0]) +  "x" +str( best_size[1]))
 	wn = Screen()
 	sarah = Turtle()
 	wn.setworldcoordinates(0, 0, best_size[0]+5,best_size[1]+5)
 	sarah.speed(0)
 
-	for i in range(len(block_dimensions)):
-		shape(str(i+1),best_coord[i][0],best_coord[i][1],block_dimensions[i][0],block_dimensions[i][1],sarah)
+	for i in range(len(best_polish_exp)):
+		if(best_polish_exp[i] < ((len(best_polish_exp) + 1)/2)):
+			# print("i", i)
+			shape(str(best_polish_exp[i]),best_coord[best_polish_exp[i]-1][0],best_coord[best_polish_exp[i]-1][1],block_dimensions[best_polish_exp[i]-1][0],block_dimensions[best_polish_exp[i]-1][1],sarah)
 
 	wn.exitonclick()
 
