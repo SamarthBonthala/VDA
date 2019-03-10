@@ -79,6 +79,7 @@ def post_to_inorder(polish_exp_temp,operators,operands):
 
 		#print("inorder", inorder)
 	return inorder
+	
 def area_coord(polish_exp_temp, block_sizes):
 	# Construct a tree from the polish expression
 	#polish_exp_temp = [2,5,'V',1,'H',3,7,4,'V','H',6,'V',8,'V','H']
@@ -101,55 +102,63 @@ def area_coord(polish_exp_temp, block_sizes):
 	# Convention: xyH means x is below y and xyV means x is to the left of y
 	
 	stack = []
+	size = []
 	new = [0,0]
+	
 	i = 0 # Loop variable parsing through Polish expression element by element
 	j = 0 # Number of times blocks have been combined
 	# Computing the area occupied by the orientation of all blocks for the above Polish expression
+	#print("ttptptptp")
+	#print("polish_exp_temp", polish_exp_temp)
 	while(i < len(polish_exp_temp)):
 	
 		if (polish_exp_temp[i] in operands):
 			#stack.append(block_sizes[(polish_exp_temp[i]-1)]) # Appending block sizes to the array
-			stack.append([polish_exp_temp[i],block_sizes[(polish_exp_temp[i]-1)]])
+			#print("polish_exp_temp[i]",polish_exp_temp[i])
+			#print("block_sizes[(polish_exp_temp[i]-1)]", block_sizes[(polish_exp_temp[i]-1)])
+			stack.append(block_sizes[(polish_exp_temp[i]-1)])
 			#print(polish_exp_temp[i])
 			#print("stack",stack)
 				
 		elif (polish_exp_temp[i] in operators and polish_exp_temp[i] == 'V'):
+			#print(polish_exp_temp)
+			#print(stack)
 			right = stack.pop()
 			#print("right",right)
 			left = stack.pop()
 			#print("left",left)
-			arr = vertical(left[1],right[1])
-			if(right[0]>no_of_blocks):
-				x =  right[2]
-			else:
-				x = right[0]
-			stack.append([left[0]*no_of_blocks,arr,x])
+			arr = vertical(left,right)
+			size = arr[:]
+			stack.append(arr[:])
 			
 			
 		elif (polish_exp_temp[i] in operators and polish_exp_temp[i] == 'H'):
 			top = stack.pop()
 			#print("top",top)
-			if(len(stack)==0):
-				stack.append(top)
-				break
+			# if(len(stack)==0):
+			# 	stack.append(top)
+			# 	break
 			bottom = stack.pop()
 			#print("bottom",bottom)
-			arr = horizontal(top[1],bottom[1])
-			if(top[0]>no_of_blocks):
-				x =  top[2]
-			else:
-				x = top[0]
-			stack.append([bottom[0]*no_of_blocks,arr,x])
+			arr = horizontal(top,bottom)
+			size = arr[:]
+			stack.append(arr[:])
 
+		#print("stack", stack)
 		i = i+1
 	
 	# co_ord[no_of_blocks-1] = new[:]	
-	size = stack.pop()
-	area = size[1][0]*size[1][1] # Area spanned by this configuration
+	
+	#print("stack just been", stack)
+	#size = stack.pop()
+	#print("size", size)
+	area = size[0]*size[1] # Area spanned by this configuration
 
 
 	inorder = post_to_inorder(polish_exp_temp, operators, operands)
-	print(inorder)
+	
+
+	#print(inorder)
 
 
 	new = [0,0]
