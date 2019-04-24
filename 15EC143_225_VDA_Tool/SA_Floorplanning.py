@@ -400,10 +400,10 @@ def annealing(adj_matrix, blocks, block_dimensions):
 	return best_polish_exp, best_area, best_coord, best_size
 
 def grid(x,y,sarah):
-	A = list(np.linspace(0,x,x+1))
-	B = list(np.linspace(0,y,y+1))
-	# print x
-	# print y
+	A = list(np.linspace(0,x,x*2+1))
+	B = list(np.linspace(0,y,y*2+1))
+	print A
+	print B
 	# xcorrec = x
 	# ycorrec = y
 	# correc_flag = 0
@@ -475,21 +475,30 @@ def main():
 	print("Best Size " + str( best_area) +  " = "+ str( best_size[0]) +  "x" +str( best_size[1]))
 	wn = Screen()
 	sarah = Turtle()
-	wn.setworldcoordinates(0, 0, best_size[0]+len(block_dimensions),best_size[1]+len(block_dimensions))
+	wn.setworldcoordinates(0, 0, best_size[0]*3,best_size[1]*3)
 	#wn.setworldcoordinates(0, 0, (best_size[0])*1.5+8,(best_size[1])*1.5+8)
 	sarah.speed(0)
+	placed_coord = best_coord[:]
 	loop = 1
+	new_best_coord = best_coord[:]
 	for i in range(len(best_polish_exp)):
-		if(best_polish_exp[i] < ((len(best_polish_exp) + 1)/2)):
+		if(best_polish_exp[i] <= ((len(best_polish_exp) + 1)/2)):
 			if (best_coord[best_polish_exp[i]-1][0] == 0 and best_coord[best_polish_exp[i]-1][1] == 0):
-				shape(str(best_polish_exp[i]),(best_coord[best_polish_exp[i]-1][0]),(best_coord[best_polish_exp[i]-1][1]),block_dimensions[best_polish_exp[i]-1][0],block_dimensions[best_polish_exp[i]-1][1],sarah)
+				shape(str(best_polish_exp[i]),(best_coord[best_polish_exp[i]-1][0])*2+5,(best_coord[best_polish_exp[i]-1][1])*2,block_dimensions[best_polish_exp[i]-1][0],block_dimensions[best_polish_exp[i]-1][1],sarah)
+				#new_best_coord[best_polish_exp[i]-1][0] = best_coord[best_polish_exp[i]-1][0]
+				placed_coord[best_polish_exp[i]-1][0] = best_coord[best_polish_exp[i]-1][0]*2+5
+				placed_coord[best_polish_exp[i]-1][1] = best_coord[best_polish_exp[i]-1][1]*2
 			else:
-				shape(str(best_polish_exp[i]),(best_coord[best_polish_exp[i]-1][0])+loop,(best_coord[best_polish_exp[i]-1][1])+loop,block_dimensions[best_polish_exp[i]-1][0],block_dimensions[best_polish_exp[i]-1][1],sarah)
+				shape(str(best_polish_exp[i]),(best_coord[best_polish_exp[i]-1][0])*2+5,(best_coord[best_polish_exp[i]-1][1])*2,block_dimensions[best_polish_exp[i]-1][0],block_dimensions[best_polish_exp[i]-1][1],sarah)
+				placed_coord[best_polish_exp[i]-1][0] = best_coord[best_polish_exp[i]-1][0]*2+5
+				placed_coord[best_polish_exp[i]-1][1] = best_coord[best_polish_exp[i]-1][1]*2
 				loop = loop + 1
 	
 	# correc_flag indicates if the sizes were corrected using x*2+1 by making grid size as 0.5*0.5 or not. Grid size is 1*1 when correc_flag = 0
 	#A,B,xcorrec,ycorrec,correc_flag = grid(best_size[0]*1.5+8,best_size[1]*1.5+8,sarah)
-	grid(best_size[0]+len(block_dimensions),best_size[1]+len(block_dimensions),sarah)
-	wn.exitonclick()
+		
+	print placed_coord
+	grid(best_size[0]*3,best_size[1]*3,sarah)
 
+	wn.exitonclick()
 main()
