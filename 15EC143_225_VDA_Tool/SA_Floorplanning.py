@@ -232,6 +232,7 @@ def wirelength(adj_matrix, block_dimensions, node_coord):
 	return weight
 
 def cost_func_param(adj_matrix):
+	#cost_param = 0.5
 	cost_param = 0.5
 	return cost_param
 
@@ -315,7 +316,7 @@ def annealing(adj_matrix, blocks, block_dimensions):
 		
 	avg_cost = sum/4
 	initial_temperature = -avg_cost/math.log(0.9)
-		
+	#initial_temperature = 50 	
 	print ("Initial Temperature calculated:",initial_temperature)
 	
 	# Annealing algorithm begins here
@@ -448,12 +449,12 @@ def main():
 	
 	# Look up table for storing the block dimensions in the form of a dictionary
 	block_dim = dict()
-	block_dim.update({'DFF': [8,5]})
-	block_dim.update({'NOT': [2,1]})
-	block_dim.update({'AND': [4,3]})
-	block_dim.update({'NAND': [2,3]}) 
-	block_dim.update({'NOR': [2,3]})
-	block_dim.update({'OR': [4,3]})
+	block_dim.update({'DFF': [7,6]})
+	block_dim.update({'NOT': [1,2]})
+	block_dim.update({'AND': [3,4]})
+	block_dim.update({'NAND': [2,4]}) 
+	block_dim.update({'NOR': [2,4]})
+	block_dim.update({'OR': [3,6]})
 
 	block_names = range(1,len(nodes)+1) # Blocks labelled as 1,2,3,4,....,(total_no)
 	block_dimensions = [0]*len(adj_matrix[0])
@@ -484,14 +485,14 @@ def main():
 	for i in range(len(best_polish_exp)):
 		if(best_polish_exp[i] <= ((len(best_polish_exp) + 1)/2)):
 			if (best_coord[best_polish_exp[i]-1][0] == 0 and best_coord[best_polish_exp[i]-1][1] == 0):
-				shape(str(best_polish_exp[i]),(best_coord[best_polish_exp[i]-1][0])*2+5,(best_coord[best_polish_exp[i]-1][1])*2,block_dimensions[best_polish_exp[i]-1][0],block_dimensions[best_polish_exp[i]-1][1],sarah)
+				shape(str(best_polish_exp[i]),(best_coord[best_polish_exp[i]-1][0])*2+5,(best_coord[best_polish_exp[i]-1][1])*2+5,block_dimensions[best_polish_exp[i]-1][0],block_dimensions[best_polish_exp[i]-1][1],sarah)
 				#new_best_coord[best_polish_exp[i]-1][0] = best_coord[best_polish_exp[i]-1][0]
 				placed_coord[best_polish_exp[i]-1][0] = best_coord[best_polish_exp[i]-1][0]*2+5
-				placed_coord[best_polish_exp[i]-1][1] = best_coord[best_polish_exp[i]-1][1]*2
+				placed_coord[best_polish_exp[i]-1][1] = best_coord[best_polish_exp[i]-1][1]*2+5
 			else:
-				shape(str(best_polish_exp[i]),(best_coord[best_polish_exp[i]-1][0])*2+5,(best_coord[best_polish_exp[i]-1][1])*2,block_dimensions[best_polish_exp[i]-1][0],block_dimensions[best_polish_exp[i]-1][1],sarah)
+				shape(str(best_polish_exp[i]),(best_coord[best_polish_exp[i]-1][0])*2+5,(best_coord[best_polish_exp[i]-1][1])*2+5,block_dimensions[best_polish_exp[i]-1][0],block_dimensions[best_polish_exp[i]-1][1],sarah)
 				placed_coord[best_polish_exp[i]-1][0] = best_coord[best_polish_exp[i]-1][0]*2+5
-				placed_coord[best_polish_exp[i]-1][1] = best_coord[best_polish_exp[i]-1][1]*2
+				placed_coord[best_polish_exp[i]-1][1] = best_coord[best_polish_exp[i]-1][1]*2+5
 				loop = loop + 1
 	
 	# correc_flag indicates if the sizes were corrected using x*2+1 by making grid size as 0.5*0.5 or not. Grid size is 1*1 when correc_flag = 0

@@ -63,7 +63,7 @@ def netlist_to_adj_mat(filename):
 		indx = init_outputs.index(value)
 		for node in gate_names_ops:
 			if value in gate_names_ops[node]:
-				adj_mat[node][indx] = 1
+				#adj_mat[node][indx] = 1
 				adj_mat[indx][node] = 1
 	
 	os.system("touch inp_adj_mat.txt")
