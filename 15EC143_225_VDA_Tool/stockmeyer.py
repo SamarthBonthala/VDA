@@ -3,7 +3,6 @@
 # Input: Normalized Polish expression as a list and sizes of each type of block
 # Output: List of blocks with the optimal dimensions and the co-ordinate of the lower left corner of each block
 from turtle import *
-
 # Definition for a  binary tree node
 class TreeNode:
     def __init__(self, x):
@@ -295,7 +294,9 @@ def area_coord(polish_exp_temp, block_sizes):
 
 def vertical(L,R):
 	L_new = L[:]
+	#L_new = copy.deepcopy(L)
 	R_new = R[:]
+	#R_new = copy.deepcopy(R)
 	dim = []
 	dim.append(L_new[0]+R_new[0]) # Add the widths as the two blocks are seperated by vertical cut
 	dim.append(max(L_new[1],R_new[1])) # Consider the maximum height possible 
@@ -304,7 +305,9 @@ def vertical(L,R):
 
 def horizontal(L,R):
 	L_new = L[:]
+	#L_new = copy.deepcopy(L)
 	R_new = R[:]
+	#R_new = copy.deepcopy(R)
 	dim = []
 	dim.append(max(L_new[0],R_new[0])) # Consider the maximum width possible
 	dim.append(L_new[1]+R_new[1]) # Add the heights as the two blocks are seperated by vertical cut

@@ -12,6 +12,7 @@ from stockmeyer import horizontal
 import numpy as np
 
 def shape(label,x,y,a,b,sarah):
+	sarah.penup()
 	sarah.goto(x,y)
 	sarah.fillcolor("yellow")
 	sarah.pendown()
@@ -42,7 +43,7 @@ def input_func(filename):
 		temp = [int(j) for j in temp]
 		adj_matrix.append(temp)
   	
-  	return adj_matrix
+	return adj_matrix
 
 # Exchange two adjacent operands - Move Type 1
 def move1(polish_exp):
@@ -315,8 +316,8 @@ def annealing(adj_matrix, blocks, block_dimensions):
 		i = i+1
 		
 	avg_cost = sum/4
-	initial_temperature = -avg_cost/math.log(0.9)
-	#initial_temperature = 50 	
+	#initial_temperature = -avg_cost/math.log(0.9)
+	initial_temperature = 50 	
 	print ("Initial Temperature calculated:",initial_temperature)
 	
 	# Annealing algorithm begins here
@@ -392,7 +393,7 @@ def annealing(adj_matrix, blocks, block_dimensions):
 			no_of_moves = 0
 			temp_reject = temp_reject + 1
 			temperature = temperature*math.pow(tempfact,temp_iteration) 
-			print("new temp ", temperature)
+			#print("new temp ", temperature)
 			temp_iteration = temp_iteration + 1 # Update the temperature iteration
 
 
@@ -400,106 +401,75 @@ def annealing(adj_matrix, blocks, block_dimensions):
 
 	return best_polish_exp, best_area, best_coord, best_size
 
-def grid(x,y,sarah):
-	A = list(np.linspace(0,x,x*2+1))
-	B = list(np.linspace(0,y,y*2+1))
-	print A
-	print B
-	# xcorrec = x
-	# ycorrec = y
-	# correc_flag = 0
-	# # Correction if we get multiples of 0.5 as value as we are multiplying the node_coord by 1.5 as well as the area too
-	# if((x*2)%2 != 0 or (y*2)%2 !=0):
-	# 	correc_flag = 1
-	# 	xcorrec = x*2+1
-	# 	ycorrec = y*2+1
-	# 	A = list(np.linspace(0,x,xcorrec))
-	# 	B = list(np.linspace(0,y,ycorrec))
+# def main():
 
-	for i in A:
-
-		sarah.goto(i,0)
-		sarah.pencolor("red")
-		sarah.pendown()
-		sarah.left(90)
-		sarah.forward(y)
-		sarah.penup()
-		sarah.right(90)
-
-	for j in B:
-
-		sarah.goto(0,j)
-		sarah.pencolor("blue")
-		sarah.pendown()
-		sarah.forward(x)
-		sarah.penup()
-
-	# return A,B,xcorrec,ycorrec,correc_flag
-
-def main():
-
-	print ("Enter the name of the file containing the required netlist")
-	filename = raw_input("\n")
+# 	print ("Enter the name of the file containing the required netlist")
 	
-	# Converting the netlist to adjacency matrix
-	nodes = netlist_to_adj_mat(filename)
+# 	filename = input("\n")
 	
-	# Take input from the text file containing the adjacency matrix of unpartitioned graph
-	adj_matrix = input_func("inp_adj_mat.txt")
+# 	# Converting the netlist to adjacency matrix
+# 	nodes = netlist_to_adj_mat(filename)
 	
-	# Look up table for storing the block dimensions in the form of a dictionary
-	block_dim = dict()
-	block_dim.update({'DFF': [7,6]})
-	block_dim.update({'NOT': [1,2]})
-	block_dim.update({'AND': [3,4]})
-	block_dim.update({'NAND': [2,4]}) 
-	block_dim.update({'NOR': [2,4]})
-	block_dim.update({'OR': [3,6]})
+# 	# Take input from the text file containing the adjacency matrix of unpartitioned graph
+# 	adj_matrix = input_func("inp_adj_mat.txt")
+	
+# 	# Look up table for storing the block dimensions in the form of a dictionary
+# 	block_dim = dict()
+# 	block_dim.update({'DFF': [7,6]})
+# 	block_dim.update({'NOT': [1,2]})
+# 	block_dim.update({'AND': [3,4]})
+# 	block_dim.update({'NAND': [2,4]}) 
+# 	block_dim.update({'NOR': [2,4]})
+# 	block_dim.update({'OR': [3,6]})
 
-	block_names = range(1,len(nodes)+1) # Blocks labelled as 1,2,3,4,....,(total_no)
-	block_dimensions = [0]*len(adj_matrix[0])
+# 	block_names = range(1,len(nodes)+1) # Blocks labelled as 1,2,3,4,....,(total_no)
+# 	block_dimensions = [0]*len(adj_matrix[0])
 	
-	# Computation of the block sizes (block_dimensions) on comparision with the entries in the look up table
-	j = 0
-	for i in nodes:
-		block_dimensions[j] = block_dim[i]
-		j = j+1
+# 	# Computation of the block sizes (block_dimensions) on comparision with the entries in the look up table
+# 	j = 0
+# 	for i in nodes:
+# 		block_dimensions[j] = block_dim[i]
+# 		j = j+1
 		
 	
-	# Run simulated annealing algorithm for obtaining the optimal floorplan
-	best_polish_exp, best_area, best_coord, best_size = annealing(adj_matrix, block_names, block_dimensions)
+# 	# Run simulated annealing algorithm for obtaining the optimal floorplan
+# 	best_polish_exp, best_area, best_coord, best_size = annealing(adj_matrix, block_names, block_dimensions)
 	
-	print("best_coord", best_coord)
-	print("block_dimensions", block_dimensions)
+# 	print("best_coord", best_coord)
+# 	print("block_dimensions", block_dimensions)
 
-	print("Best Polish Expression ", best_polish_exp)
-	print("Best Size " + str( best_area) +  " = "+ str( best_size[0]) +  "x" +str( best_size[1]))
-	wn = Screen()
-	sarah = Turtle()
-	wn.setworldcoordinates(0, 0, best_size[0]*3,best_size[1]*3)
-	#wn.setworldcoordinates(0, 0, (best_size[0])*1.5+8,(best_size[1])*1.5+8)
-	sarah.speed(0)
-	placed_coord = best_coord[:]
-	loop = 1
-	new_best_coord = best_coord[:]
-	for i in range(len(best_polish_exp)):
-		if(best_polish_exp[i] <= ((len(best_polish_exp) + 1)/2)):
-			if (best_coord[best_polish_exp[i]-1][0] == 0 and best_coord[best_polish_exp[i]-1][1] == 0):
-				shape(str(best_polish_exp[i]),(best_coord[best_polish_exp[i]-1][0])*2+5,(best_coord[best_polish_exp[i]-1][1])*2+5,block_dimensions[best_polish_exp[i]-1][0],block_dimensions[best_polish_exp[i]-1][1],sarah)
-				#new_best_coord[best_polish_exp[i]-1][0] = best_coord[best_polish_exp[i]-1][0]
-				placed_coord[best_polish_exp[i]-1][0] = best_coord[best_polish_exp[i]-1][0]*2+5
-				placed_coord[best_polish_exp[i]-1][1] = best_coord[best_polish_exp[i]-1][1]*2+5
-			else:
-				shape(str(best_polish_exp[i]),(best_coord[best_polish_exp[i]-1][0])*2+5,(best_coord[best_polish_exp[i]-1][1])*2+5,block_dimensions[best_polish_exp[i]-1][0],block_dimensions[best_polish_exp[i]-1][1],sarah)
-				placed_coord[best_polish_exp[i]-1][0] = best_coord[best_polish_exp[i]-1][0]*2+5
-				placed_coord[best_polish_exp[i]-1][1] = best_coord[best_polish_exp[i]-1][1]*2+5
-				loop = loop + 1
+# 	print("Best Polish Expression ", best_polish_exp)
+# 	print("Best Size " + str( best_area) +  " = "+ str( best_size[0]) +  "x" +str( best_size[1]))
+# 	wn = Screen()
+# 	sarah = Turtle()
+
+# 	wn.setworldcoordinates(0, 0, best_size[0]*3,best_size[1]*3)
+# 	#wn.setworldcoordinates(0, 0, (best_size[0])*1.5+8,(best_size[1])*1.5+8)
+# 	sarah.speed(0)
+# 	sarah.hideturtle()
+# 	placed_coord = best_coord[:]
 	
-	# correc_flag indicates if the sizes were corrected using x*2+1 by making grid size as 0.5*0.5 or not. Grid size is 1*1 when correc_flag = 0
-	#A,B,xcorrec,ycorrec,correc_flag = grid(best_size[0]*1.5+8,best_size[1]*1.5+8,sarah)
+# 	new_best_coord = best_coord[:]
+# 	for i in range(len(best_polish_exp)):
+# 		if type(best_polish_exp[i]) is not str:
+# 			if (best_polish_exp[i]) <= ((len(best_polish_exp) + 1)/2):
+# 				if (best_coord[best_polish_exp[i]-1][0] == 0 and best_coord[best_polish_exp[i]-1][1] == 0):
+# 					shape(str(best_polish_exp[i]),(best_coord[best_polish_exp[i]-1][0])*2+5,(best_coord[best_polish_exp[i]-1][1])*2+5,block_dimensions[best_polish_exp[i]-1][0],block_dimensions[best_polish_exp[i]-1][1],sarah)
+# 					#new_best_coord[best_polish_exp[i]-1][0] = best_coord[best_polish_exp[i]-1][0]
+# 					placed_coord[best_polish_exp[i]-1][0] = best_coord[best_polish_exp[i]-1][0]*2+5
+# 					placed_coord[best_polish_exp[i]-1][1] = best_coord[best_polish_exp[i]-1][1]*2+5
+# 				else:
+# 					shape(str(best_polish_exp[i]),(best_coord[best_polish_exp[i]-1][0])*2+5,(best_coord[best_polish_exp[i]-1][1])*2+5,block_dimensions[best_polish_exp[i]-1][0],block_dimensions[best_polish_exp[i]-1][1],sarah)
+# 					placed_coord[best_polish_exp[i]-1][0] = best_coord[best_polish_exp[i]-1][0]*2+5
+# 					placed_coord[best_polish_exp[i]-1][1] = best_coord[best_polish_exp[i]-1][1]*2+5
+					
+	
+# 	# correc_flag indicates if the sizes were corrected using x*2+1 by making grid size as 0.5*0.5 or not. Grid size is 1*1 when correc_flag = 0
+# 	#A,B,xcorrec,ycorrec,correc_flag = grid(best_size[0]*1.5+8,best_size[1]*1.5+8,sarah)
 		
-	print placed_coord
-	grid(best_size[0]*3,best_size[1]*3,sarah)
+# 	#print placed_coord
 
-	wn.exitonclick()
-main()
+# 	#grid(best_size[0]*3,best_size[1]*3,sarah)
+
+# 	wn.exitonclick()
+# main()
