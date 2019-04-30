@@ -74,135 +74,186 @@ def grid(x, y, sarah):
 
     return A, B
 
+def splitting_path(paths):
+    i = 0
+    temp = []
+    split_paths = []
 
-def draw_via(x, y):
+    for i in range(len(paths)-1):
+        if paths[i+1] != paths[i]:
+            temp.append(paths[i])
+        else:
+            split_paths.append(temp)
+            temp = []
+
+    if temp != []:
+        temp.append(paths[len(paths)-1])
+        split_paths.append(temp)
+        temp =[]
+
+    if paths[len(paths)-1] == paths[len(paths)-2]:
+        temp = split_paths[-1]
+        temp.append(paths[len(paths)-1])
+
+    return split_paths
+
+def draw_via(x, y, sarah):
 
     sarah.penup()
-    sarah.goto(x + 0.1, y + 0.1)
+    sarah.goto(x + 0.05, y + 0.05)
     sarah.pendown()
-    sarah.begin_fill()
-    sarah.forward(0.2)
-    sarah.left(90)
-    sarah.forward(0.2)
-    sarah.left(90)
-    sarah.forward(0.2)
-    sarah.left(90)
-    sarah.forward(0.2)
-    sarah.left(90)
-    sarah.forward(0.2)
     sarah.fillcolor("black")
+    sarah.begin_fill()
+    sarah.forward(0.3)
+    sarah.left(90)
+    sarah.forward(0.3)
+    sarah.left(90)
+    sarah.forward(0.3)
+    sarah.left(90)
+    sarah.forward(0.3)
+    sarah.left(90)
+    sarah.forward(0.3)
     sarah.end_fill()
     sarah.penup()
 
+def draw_source(source, sarah):
+    sarah.goto(source[0], source[1] + 0.25)
+    sarah.pencolor("red")
+    sarah.pendown()
+    sarah.forward(0.75)
+    sarah.penup()
 
-def draw_route(route_path, source, target, route_type):
+def draw_target(target, sarah):
+    sarah.goto(target[0] - 0.25, target[1] + 0.25)
+    sarah.pencolor("red")
+    sarah.pendown()
+    sarah.forward(0.25)
+    sarah.penup()
+
+def delta_check(delta_x, delta_y, layer, route_path, node, sarah):
+    if delta_x == 0 and delta_y == 0.5:  # Path moved up
+        sarah.goto(route_path[node - 1][0] + 0.25, route_path[node - 1][1] + 0.25)
+        if layer == 1:
+            sarah.pencolor("red")
+        else:
+            sarah.pencolor("blue")
+        sarah.pendown()
+        sarah.left(90)
+        sarah.forward(0.5)
+        sarah.penup()
+        sarah.right(90)
+    if delta_x == 0 and delta_y == -0.5:  # Path moved down
+        sarah.goto(route_path[node - 1][0] + 0.25, route_path[node - 1][1] + 0.25)
+        if layer == 1:
+            sarah.pencolor("red")
+        else:
+            sarah.pencolor("blue")
+        sarah.pendown()
+        sarah.right(90)
+        sarah.forward(0.5)
+        sarah.penup()
+        sarah.left(90)
+    if delta_x == 0.5 and delta_y == 0:  # Path moved right
+        sarah.goto(route_path[node - 1][0] + 0.25, route_path[node - 1][1] + 0.25)
+        if layer == 1:
+            sarah.pencolor("red")
+        else:
+            sarah.pencolor("blue")
+        sarah.pendown()
+        sarah.forward(0.5)
+        sarah.penup()
+    if delta_x == -0.5 and delta_y == 0:  # Path moved left
+        sarah.goto(route_path[node - 1][0] + 0.25, route_path[node - 1][1] + 0.25)
+        if layer == 1:
+            sarah.pencolor("red")
+        else:
+            sarah.pencolor("blue")
+        sarah.pendown()
+        sarah.left(180)
+        sarah.forward(0.5)
+        sarah.penup()
+        sarah.right(180)
+
+def delta_check_last(delta_x, delta_y, route_path, layer, sarah):
+    if delta_x == 0 and delta_y == 0.5:  # Path moved up
+        sarah.goto(route_path[len(route_path)-2][0] + 0.25, route_path[len(route_path)-2][1] + 0.25)
+        if layer == 1:
+            sarah.pencolor("red")
+        else:
+            sarah.pencolor("blue")
+        sarah.pendown()
+        sarah.left(90)
+        sarah.forward(1.0)
+        sarah.penup()
+        sarah.right(90)
+    if delta_x == 0 and delta_y == -0.5:  # Path moved down
+        sarah.goto(route_path[len(route_path)-2][0] + 0.25, route_path[len(route_path)-2][1] + 0.25)
+        if layer == 1:
+            sarah.pencolor("red")
+        else:
+            sarah.pencolor("blue")
+        sarah.pendown()
+        sarah.right(90)
+        sarah.forward(1.0)
+        sarah.penup()
+        sarah.left(90)
+    if delta_x == 0.5 and delta_y == 0:  # Path moved right
+        sarah.goto(route_path[len(route_path)-2][0] + 0.25, route_path[len(route_path)-2][1] + 0.25)
+        if layer == 1:
+            sarah.pencolor("red")
+        else:
+            sarah.pencolor("blue")
+        sarah.pendown()
+        sarah.forward(1.0)
+        sarah.penup()
+    if delta_x == -0.5 and delta_y == 0:  # Path moved left
+        sarah.goto(route_path[len(route_path)-2][0] + 0.25, route_path[len(route_path)-2][1] + 0.25)
+        if layer == 1:
+            sarah.pencolor("red")
+        else:
+            sarah.pencolor("blue")
+        sarah.pendown()
+        sarah.left(180)
+        sarah.forward(1.0)
+        sarah.penup()
+        sarah.right(180)
+
+def draw_route(route_path, source, target, route_type, layer, sarah):
 
     # Initial route in layer1
     # print("Source: ", source)
     # print "Source xcoord: ", (source[0]+0.)
     # print "Source ycoord: ", (source[1] + 0.25)
     if route_type == 0:
-        sarah.goto(source[0], source[1] + 0.25)
-        sarah.pencolor("red")
-        sarah.pendown()
-        sarah.forward(0.75)
-        sarah.penup()
-
-        route_path.reverse()  # So that source is first and destination at the end
-        for node in range(2, len(route_path)):
+        # draw_source function called
+        draw_source(source, sarah)
+        #route_path.reverse()  # So that source is first and destination at the end
+        for node in range(2, len(route_path)-1):
             delta_x = route_path[node][0]-route_path[node-1][0]
             delta_y = route_path[node][1]-route_path[node-1][1]
 
-            if delta_x == 0 and delta_y == 0.5: # Path moved up
-                sarah.goto(route_path[node-1][0] + 0.25, route_path[node-1][1] + 0.25)
-                sarah.pencolor("red")
-                sarah.pendown()
-                sarah.left(90)
-                sarah.forward(0.5)
-                sarah.penup()
-                sarah.right(90)
-            if delta_x == 0 and delta_y == -0.5:  # Path moved down
-                sarah.goto(route_path[node - 1][0] + 0.25, route_path[node - 1][1] + 0.25)
-                sarah.pencolor("red")
-                sarah.pendown()
-                sarah.right(90)
-                sarah.forward(0.5)
-                sarah.penup()
-                sarah.left(90)
-            if delta_x == 0.5 and delta_y == 0:  # Path moved right
-                sarah.goto(route_path[node - 1][0] + 0.25, route_path[node - 1][1] + 0.25)
-                sarah.pencolor("red")
-                sarah.pendown()
-                sarah.forward(0.5)
-                sarah.penup()
-            if delta_x == -0.5 and delta_y == 0:  # Path moved left
-                sarah.goto(route_path[node - 1][0] + 0.25, route_path[node - 1][1] + 0.25)
-                sarah.pencolor("red")
-                sarah.pendown()
-                sarah.left(180)
-                sarah.forward(0.5)
-                sarah.penup()
-                sarah.right(180)
-            if delta_x == 0 and delta_y == 0:  # Path moved left
-                if sarah.pencolor() == "red":
-                    sarah.pencolor("blue")
-                else:
-                    sarah.pencolor("red")
-                draw_via(route_path[node - 1][0], route_path[node - 1][1])
+            delta_check(delta_x,delta_y,layer,route_path,node,sarah)
 
-        sarah.goto(target[0] - 0.25, target[1] + 0.25)
-        sarah.pencolor("red")
-        sarah.pendown()
-        sarah.forward(0.25)
-        sarah.penup()
-    else:
-        route_path.reverse()  # So that source is first and destination at the end
+        draw_target(target, sarah)
+    elif route_type == 1:
+        #route_path.reverse()  # So that source is first and destination at the end
         for node in range(1, len(route_path)):
             delta_x = route_path[node][0] - route_path[node - 1][0]
             delta_y = route_path[node][1] - route_path[node - 1][1]
 
-            if delta_x == 0 and delta_y == 0.5:  # Path moved up
-                sarah.goto(route_path[node - 1][0] + 0.25, route_path[node - 1][1] + 0.25)
-                sarah.pencolor("red")
-                sarah.pendown()
-                sarah.left(90)
-                sarah.forward(0.5)
-                sarah.penup()
-                sarah.right(90)
-            if delta_x == 0 and delta_y == -0.5:  # Path moved down
-                sarah.goto(route_path[node - 1][0] + 0.25, route_path[node - 1][1] + 0.25)
-                sarah.pencolor("red")
-                sarah.pendown()
-                sarah.right(90)
-                sarah.forward(0.5)
-                sarah.penup()
-                sarah.left(90)
-            if delta_x == 0.5 and delta_y == 0:  # Path moved right
-                sarah.goto(route_path[node - 1][0] + 0.25, route_path[node - 1][1] + 0.25)
-                sarah.pencolor("red")
-                sarah.pendown()
-                sarah.forward(0.5)
-                sarah.penup()
-            if delta_x == -0.5 and delta_y == 0:  # Path moved left
-                sarah.goto(route_path[node - 1][0] + 0.25, route_path[node - 1][1] + 0.25)
-                sarah.pencolor("red")
-                sarah.pendown()
-                sarah.left(180)
-                sarah.forward(0.5)
-                sarah.penup()
-                sarah.right(180)
-            if delta_x == 0 and delta_y == 0:  # Path moved left
-                if sarah.pencolor() == "red":
-                    sarah.pencolor("blue")
-                else:
-                    sarah.pencolor("red")
-                draw_via(route_path[node - 1][0], route_path[node - 1][1])
+            delta_check(delta_x, delta_y, layer, route_path, node, sarah)
+        delta_x_last = route_path[len(route_path)-1][0] - route_path[len(route_path)-2][0]
+        delta_y_last = route_path[len(route_path)-1][1] - route_path[len(route_path)-2][1]
+        delta_check_last(delta_x_last,delta_y_last,route_path,layer, sarah)
 
-        sarah.goto(target[0], target[1] + 0.25)
-        sarah.pencolor("red")
-        sarah.pendown()
-        sarah.forward(0.25)
-        sarah.penup()
+    else:
+        for node in range(1, len(route_path)-1):
+            delta_x = route_path[node][0] - route_path[node - 1][0]
+            delta_y = route_path[node][1] - route_path[node - 1][1]
+
+            delta_check(delta_x, delta_y, layer, route_path, node, sarah)
+        
+        draw_target(target, sarah)
 
 
 def cleanup(routing_grid, X, Y):
@@ -214,7 +265,7 @@ def cleanup(routing_grid, X, Y):
     return routing_grid
 
 
-def check_layer1(routing_grid_layer1, routing_grid_layer2, obstacle_layer1, obstacle_layer2, path):
+def check_layer1(routing_grid_layer1, routing_grid_layer2, obstacle_layer1, obstacle_layer2, path, screen_size, X, Y):
 
     layer = 0
     if routing_grid_layer1[path[-1:][0]][1] == -1:
@@ -246,7 +297,7 @@ def check_layer1(routing_grid_layer1, routing_grid_layer2, obstacle_layer1, obst
     return [path, layer]
 
 
-def check_layer2(routing_grid_layer1, routing_grid_layer2, obstacle_layer1, obstacle_layer2, path):
+def check_layer2(routing_grid_layer1, routing_grid_layer2, obstacle_layer1, obstacle_layer2, path,screen_size, X, Y):
 
     layer = 0
     if routing_grid_layer2[path[-1:][0]][1] == -1:
@@ -277,7 +328,7 @@ def check_layer2(routing_grid_layer1, routing_grid_layer2, obstacle_layer1, obst
     return [path, layer]
 
 
-def check_layer1_and_mark(routing_grid_layer1, path, source_wavefront):
+def check_layer1_and_mark(routing_grid_layer1, path, source_wavefront,screen_size):
 
     layer = 0
     if routing_grid_layer1[path[-1:][0]][1] == -1:
@@ -314,7 +365,7 @@ def check_layer1_and_mark(routing_grid_layer1, path, source_wavefront):
     return [source_wavefront, path, layer]
 
 
-def check_layer2_and_mark(routing_grid_layer2, path, source_wavefront):
+def check_layer2_and_mark(routing_grid_layer2, path, source_wavefront, screen_size):
 
     layer = 0
     if routing_grid_layer2[path[-1:][0]][1] == -1:
@@ -350,7 +401,7 @@ def check_layer2_and_mark(routing_grid_layer2, path, source_wavefront):
     return [source_wavefront, path, layer]
 
 
-def backtrace(routing_grid_layer1, routing_grid_layer2, target, source, obstacle_layer1, obstacle_layer2, X, Y):
+def backtrace(routing_grid_layer1, routing_grid_layer2, target, source, obstacle_layer1, obstacle_layer2, X, Y,screen_size):
 
     actual_target = copy.deepcopy(target)
     actual_source = copy.deepcopy(source)
@@ -365,7 +416,7 @@ def backtrace(routing_grid_layer1, routing_grid_layer2, target, source, obstacle
     points = [(current_node[0] - 0.5, current_node[1]), (current_node[0], current_node[1] - 0.5),
               (current_node[0], current_node[1] + 0.5)]
     min_cost = 32768
-    min_cost_point = [51.0, 60.0]
+    min_cost_point = [screen_size[0], screen_size[1]]
 
     for point in points:
         # print("Current Point: ", routing_grid_layer1[point])
@@ -384,18 +435,18 @@ def backtrace(routing_grid_layer1, routing_grid_layer2, target, source, obstacle
 
     path.append(tuple(min_cost_point))
     obstacle_layer1[screen_size[1] - Y.index(min_cost_point[1]), X.index(min_cost_point[0])] = 1
-    [path, layer] = check_layer1(routing_grid_layer1, routing_grid_layer2, obstacle_layer1, obstacle_layer2, path)
+    [path, layer] = check_layer1(routing_grid_layer1, routing_grid_layer2, obstacle_layer1, obstacle_layer2, path, screen_size, X, Y)
 
     while routing_grid_layer1[path[-1:][0]][1] != 0 or routing_grid_layer2[path[-1:][0]][1] != 0:
-        print("Layer: ", 1, "Path point: ", path[-1:][0], "Grid: ", routing_grid_layer1[path[-1:][0]], "Obstacle: ",
-              obstacle_layer1[screen_size[1] - Y.index(path[-1:][0][1]), X.index(path[-1:][0][0])])
-        print("Layer: ", 2, "Path point: ", path[-1:][0], "Grid: ", routing_grid_layer2[path[-1:][0]], "Obstacle: ",
-              obstacle_layer2[screen_size[1] - Y.index(path[-1:][0][1]), X.index(path[-1:][0][0])])
+        #print("Layer: ", 1, "Path point: ", path[-1:][0], "Grid: ", routing_grid_layer1[path[-1:][0]], "Obstacle: ",
+              #obstacle_layer1[screen_size[1] - Y.index(path[-1:][0][1]), X.index(path[-1:][0][0])])
+        #print("Layer: ", 2, "Path point: ", path[-1:][0], "Grid: ", routing_grid_layer2[path[-1:][0]], "Obstacle: ",
+              #obstacle_layer2[screen_size[1] - Y.index(path[-1:][0][1]), X.index(path[-1:][0][0])])
 
         if layer == 1:
-            [path, layer] = check_layer1(routing_grid_layer1, routing_grid_layer2, obstacle_layer1, obstacle_layer2, path)
+            [path, layer] = check_layer1(routing_grid_layer1, routing_grid_layer2, obstacle_layer1, obstacle_layer2, path, screen_size, X, Y)
         elif layer == 2:
-            [path, layer] = check_layer2(routing_grid_layer1, routing_grid_layer2, obstacle_layer1, obstacle_layer2, path)
+            [path, layer] = check_layer2(routing_grid_layer1, routing_grid_layer2, obstacle_layer1, obstacle_layer2, path, screen_size, X, Y)
         # print("Path point: ", path[-1:][0], "Grid: ", routing_grid_layer1[path[-1:][0]], "Obstacle: ",
         # obstacle_layer1[len(Y) - Y.index(path[-1:][1]), X.index(path[-1:][0])])
 
@@ -413,7 +464,7 @@ def backtrace(routing_grid_layer1, routing_grid_layer2, target, source, obstacle
     return path
 
 
-def backtrace_and_mark(routing_grid_layer1, routing_grid_layer2, target, source):
+def backtrace_and_mark(routing_grid_layer1, routing_grid_layer2, target, source,screen_size):
 
     actual_target = copy.deepcopy(target)
     actual_source = copy.deepcopy(source)
@@ -448,16 +499,16 @@ def backtrace_and_mark(routing_grid_layer1, routing_grid_layer2, target, source)
 
     path.append(tuple(min_cost_point))
     source_wavefront[tuple(min_cost_point + [1])] = [0, 0, 1]
-    [source_wavefront, path, layer] = check_layer1_and_mark(routing_grid_layer1, path, source_wavefront)
+    [source_wavefront, path, layer] = check_layer1_and_mark(routing_grid_layer1, path, source_wavefront, screen_size)
     # obstacle_layer1[screen_size[1] - Y.index(min_cost_point[1]), X.index(min_cost_point[0])] = 1
 
     while routing_grid_layer1[path[-1:][0]][1] != 0 or routing_grid_layer2[path[-1:][0]][1] != 0:
         # print("Path point: ", path[-1:][0], "Grid: ", routing_grid_layer1[path[-1:][0]], "Obstacle: ",
         #       obstacle_layer1[screen_size[1] - Y.index(path[-1:][0][1]), X.index(path[-1:][0][0])])
         if layer == 1:
-            [source_wavefront, path, layer] = check_layer1_and_mark(routing_grid_layer1, path, source_wavefront)
+            [source_wavefront, path, layer] = check_layer1_and_mark(routing_grid_layer1, path, source_wavefront, screen_size)
         elif layer == 2:
-            [source_wavefront, path, layer] = check_layer2_and_mark(routing_grid_layer2, path, source_wavefront)
+            [source_wavefront, path, layer] = check_layer2_and_mark(routing_grid_layer2, path, source_wavefront, screen_size)
 
         # print("Path point: ", path[-1:][0], "Grid: ", routing_grid_layer1[path[-1:][0]], "Obstacle: ",
         # obstacle_layer1[len(Y) - Y.index(path[-1:][1]), X.index(path[-1:][0])])
@@ -467,7 +518,7 @@ def backtrace_and_mark(routing_grid_layer1, routing_grid_layer2, target, source)
     return source_wavefront, path
 
 
-def backtrace_mark(routing_grid_layer1, routing_grid_layer2, target, sources):
+def backtrace_mark(routing_grid_layer1, routing_grid_layer2, target, sources,screen_size):
 
     actual_target = copy.deepcopy(target)
     # actual_source = copy.deepcopy(source)
@@ -502,22 +553,22 @@ def backtrace_mark(routing_grid_layer1, routing_grid_layer2, target, sources):
 
     path.append(tuple(min_cost_point))
     source_wavefront[tuple(min_cost_point + [1])] = [0, 0, 1]
-    [source_wavefront, path, layer] = check_layer1_and_mark(routing_grid_layer1, path, source_wavefront)
+    [source_wavefront, path, layer] = check_layer1_and_mark(routing_grid_layer1, path, source_wavefront, screen_size)
     # obstacle_layer1[screen_size[1] - Y.index(min_cost_point[1]), X.index(min_cost_point[0])] = 1
 
     while tuple(list(path[-1:][0]) + [1]) not in sources:
         # print("Path point: ", path[-1:][0], "Grid: ", routing_grid_layer1[path[-1:][0]], "Obstacle: ",
         #       obstacle_layer1[screen_size[1] - Y.index(path[-1:][0][1]), X.index(path[-1:][0][0])])
         if layer == 1:
-            [source_wavefront, path, layer] = check_layer1_and_mark(routing_grid_layer1, path, source_wavefront)
+            [source_wavefront, path, layer] = check_layer1_and_mark(routing_grid_layer1, path, source_wavefront, screen_size)
         elif layer == 2:
-            [source_wavefront, path, layer] = check_layer2_and_mark(routing_grid_layer2, path, source_wavefront)
+            [source_wavefront, path, layer] = check_layer2_and_mark(routing_grid_layer2, path, source_wavefront, screen_size)
 
         # print("Path point: ", path[-1:][0], "Grid: ", routing_grid_layer1[path[-1:][0]], "Obstacle: ",
         # obstacle_layer1[len(Y) - Y.index(path[-1:][1]), X.index(path[-1:][0])])
 
-    print("Path:", path)
-    print("Source Wavefront: ", source_wavefront.keys())
+    #print("Path:", path)
+    #print("Source Wavefront: ", source_wavefront.keys())
     return source_wavefront, path
 
 
@@ -621,7 +672,7 @@ def choose_target(actual_sources, actual_targets):
     return [sources, targets]
 
 
-def maze_routing(actual_sources, actual_targets, X, Y, obstacle_layer1, obstacle_layer2, screen_size):
+def maze_routing(actual_sources, actual_targets, X, Y, obstacle_layer1, obstacle_layer2, screen_size, sarah):
 
     # Via Cost = 10, Bend Cost = 3
     routing_grid_layer1 = dict()
@@ -637,16 +688,17 @@ def maze_routing(actual_sources, actual_targets, X, Y, obstacle_layer1, obstacle
     for i in range(len(sources)):
         if len(targets[i]) > 1:
             #multi_point_net(routing_grid_layer1, routing_grid_layer2, sources[i], targets[i], X, Y, obstacle_layer1,
-                #obstacle_layer2, screen_size)
+                #obstacle_layer2, screen_size, sarah)
             continue
         else:
+            print (screen_size)
             single_point_net(routing_grid_layer1, routing_grid_layer2, sources[i], targets[i][0], X, Y,
-                obstacle_layer1, obstacle_layer2, screen_size)
-            # continue
+                obstacle_layer1, obstacle_layer2, screen_size, sarah)
+            #continue
 
 
 def single_point_net(routing_grid_layer1, routing_grid_layer2, source, target, X, Y, obstacle_layer1,
-                     obstacle_layer2, screen_size):
+                     obstacle_layer2, screen_size, sarah):
 
     # Maze routing involves three fundamental steps
     # 1. Expansion
@@ -770,20 +822,42 @@ def single_point_net(routing_grid_layer1, routing_grid_layer2, source, target, X
         wavefront.clear()
         wavefront_copy_sorted = dict(collections.OrderedDict(sorted(wavefront_copy.items(), key=lambda x: x[1])))
         wavefront = copy.deepcopy(wavefront_copy_sorted)
-    print("Wavefront: ", wavefront)
+    #print("Wavefront: ", wavefront)
 
     print("Routing Done")
 
     # Backtrace
     route_path = backtrace(routing_grid_layer1, routing_grid_layer2, target, source,
-                           obstacle_layer1, obstacle_layer2, X, Y)
+                           obstacle_layer1, obstacle_layer2, X, Y,screen_size)
 
+    # Make the paths source to target by reversing the path array
+    route_path.reverse()
+
+    split_paths = splitting_path(route_path)
+    print ("Split paths", split_paths)
     # Draw routes after backtracing every route
-    draw_route(route_path, source, target, 0)
+    for i in range(len(split_paths)-1):
+        if i%2 == 0:
+            if i == 0:
+                draw_route(split_paths[i],split_paths[i][0],split_paths[i+1][0],0,1,sarah)
+            else:
+                draw_route(split_paths[i],split_paths[i][0],split_paths[i+1][0],1,1,sarah)
+        else:
+            draw_route(split_paths[i], split_paths[i][0], split_paths[i][1], 1, 2,sarah)
+
+    if len(split_paths) == 1:
+        draw_route(split_paths[-1], split_paths[-1][0], split_paths[-1][-1], 0, 1,sarah)
+    else:
+        draw_route(split_paths[-1],split_paths[-1][0],split_paths[-1][-1],2,1,sarah)
+
+    # Drawing vias
+    if len(split_paths) != 1:
+        for j in range(1, len(split_paths)):
+            draw_via(split_paths[j][0][0],split_paths[j][0][1],sarah)
 
 
 def multi_point_net(routing_grid_layer1, routing_grid_layer2, source, target, X, Y, obstacle_layer1,
-                     obstacle_layer2, screen_size):
+                     obstacle_layer2, screen_size, sarah):
 
     print("Source: ", source)
     print("Target: ", target)
@@ -1070,12 +1144,56 @@ def multi_point_net(routing_grid_layer1, routing_grid_layer2, source, target, X,
             obstacle_layer1[screen_size[1] - Y.index(blocks[1]), X.index(blocks[0])] = 1
         elif blocks[2] == 2:
             obstacle_layer2[screen_size[1] - Y.index(blocks[1]), X.index(blocks[0])] = 1
-
+    # Drawing the routes
     for i in range(len(multi_net_path)):
-        if i == 0:
-            draw_route(multi_net_path[i], source, targets_reached[0], 0)
+        if i==0:
+            multi_net_path[i].reverse()
+
+            split_paths = splitting_path(multi_net_path[i])
+            print ("Multi net path: ",i,"is",multi_net_path[i])
+            # Draw routes after backtracing every route
+            for i in range(len(split_paths) - 1):
+                if i % 2 == 0:
+                    if i == 0:
+                        draw_route(split_paths[i], split_paths[i][0], split_paths[i + 1][0], 0, 1, sarah)
+                    else:
+                        draw_route(split_paths[i], split_paths[i][0], split_paths[i + 1][0], 1, 1, sarah)
+                else:
+                    draw_route(split_paths[i], split_paths[i][0], split_paths[i][1], 1, 2, sarah)
+
+            if len(split_paths) == 1:
+                draw_route(split_paths[-1], split_paths[-1][0], split_paths[-1][-1], 0, 1, sarah)
+            else:
+                draw_route(split_paths[-1], split_paths[-1][0], split_paths[-1][-1], 2, 1, sarah)
+
+            # Drawing vias
+            if len(split_paths) != 1:
+                for j in range(1, len(split_paths)):
+                    draw_via(split_paths[j][0][0], split_paths[j][0][1], sarah)
         else:
-            draw_route(multi_net_path[i], [0.0, 0.0], targets_reached[i], 1)
+            multi_net_path[i].reverse()
+
+            split_paths = splitting_path(multi_net_path[i])
+            print ("Multi net path: ", i, "is", multi_net_path[i])
+            # Draw routes after backtracing every route
+            for i in range(len(split_paths) - 1):
+                if i%2 == 0:
+                    if i == 0:
+                        draw_route(split_paths[i], split_paths[i][0], split_paths[i + 1][0], 0, 1, sarah)
+                    else:
+                        draw_route(split_paths[i], split_paths[i][0], split_paths[i + 1][0], 1, 1, sarah)
+                else:
+                    draw_route(split_paths[i], split_paths[i][0], split_paths[i][1], 1, 2, sarah)
+
+            if len(split_paths) == 1:
+                draw_route(split_paths[-1], split_paths[-1][0], split_paths[-1][-1], 0, 1, sarah)
+            else:
+                draw_route(split_paths[-1], split_paths[-1][0], split_paths[-1][-1], 2, 1, sarah)
+
+            # Drawing vias
+            if len(split_paths) != 1:
+                for j in range(1, len(split_paths)):
+                    draw_via(split_paths[j][0][0], split_paths[j][0][1], sarah)
 
 # # Assuming we get the the area of the circuit from other functions/subroutines of SA_Floorplanning.py file
 
@@ -1201,7 +1319,7 @@ def multi_point_net(routing_grid_layer1, routing_grid_layer2, source, target, X,
 #                       block_dimensions[best_polish_exp[i] - 1][1], sarah)
 
 
-# # grid(screen_size[0], screen_size[1], sarah)
+# #grid(screen_size[0], screen_size[1], sarah)
 # # for i in range(len(pin_coord)):
 # # 	pins[Y.index(pin_coord[i][1]), X.index(pin_coord[i][0])] = 'p'
 

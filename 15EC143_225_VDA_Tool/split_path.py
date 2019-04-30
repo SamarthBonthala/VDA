@@ -122,8 +122,8 @@ def draw_route(route_path, source, target, route_type, layer):
         sarah.forward(0.25)
         sarah.penup()
 
-paths = [1,2,3,5,3,6,7,12,8,0,9,10,11,12,17,14,15,18]
-#paths = [[1,1],[1,1],[2,2],[3,3],[4,4],[5,5],[5,5],[6,6]]
+#paths = [1,2,3,5,3,6,7,12,8,0,9,10,11,12,17,14,15,18]
+paths = [[1,1],[2,2],[2,2],[3,3],[4,4],[5,5],[5,5],[6,6]]
 
 def splitting_path(paths):
     i = 0
